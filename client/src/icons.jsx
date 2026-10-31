@@ -47,6 +47,7 @@ const PATHS = {
     </>
   ),
   check: <path d="M4.5 10.5l3.5 3.5 7.5-8" />,
+  download: <path d="M10 3.5v9M6.5 9l3.5 3.5L13.5 9M4 15.5h12" strokeLinejoin="round" />,
   alert: (
     <>
       <path d="M10 3.5l7 12.5H3L10 3.5z" strokeLinejoin="round" />
