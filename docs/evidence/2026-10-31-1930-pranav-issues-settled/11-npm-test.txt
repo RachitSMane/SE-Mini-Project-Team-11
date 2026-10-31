@@ -1,0 +1,10 @@
+
+> test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand
+
+
+Test Suites: 18 passed, 18 total
+Tests:       129 passed, 129 total
+Snapshots:   0 total
+Time:        139.535 s, estimated 145 s
+Ran all test suites in 2 projects.

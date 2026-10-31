@@ -1,0 +1,5 @@
+npm test exit code: 0
+Test Suites: 18 passed, 18 total
+Tests:       129 passed, 129 total
+
+[exited with code 0]
