@@ -1,0 +1,41 @@
+@startuml component-diagram
+' Owner: Krishna | SAD 3.3 | UML component diagram, part 1: overview (client, interfaces, server layers)
+!pragma layout smetana
+skinparam shadowing false
+skinparam componentStyle uml2
+skinparam component {
+  BackgroundColor #F5F8FC
+  BorderColor #3B5B85
+}
+skinparam packageBorderColor #7A8CA5
+skinparam defaultFontSize 14
+skinparam ArrowFontSize 13
+
+package "Browser (client)" {
+  component "COMP-01\nWhiteboard Client UI\n<<React SPA>>" as UI
+  component "COMP-02\nClient Sync Module" as SYNC
+}
+
+interface "API-02/03" as IREST
+interface "API-01" as IRT
+
+package "Application server (Node.js)" {
+  component "COMP-03\nREST API Layer\n<<Express.js>>" as REST
+  component "COMP-06\nReal-time Collaboration\nServer <<Socket.IO>>" as RT
+  component "Services\nCOMP-04 Auth\nCOMP-05 Board & Access\nCOMP-07 Version History\nCOMP-09 Logging & Monitoring" as SERVICES
+  component "COMP-08\nPersistence Layer\n<<Mongoose>>" as PERSIST
+}
+
+database "MongoDB" as DB
+
+UI -down-> SYNC : local board state
+UI -down-( IREST : requires
+SYNC -down-( IRT : requires
+IREST -down- REST
+IRT -down- RT
+REST -down-> SERVICES : uses
+RT -down-> SERVICES : uses
+SERVICES -down-> PERSIST : uses
+RT -down-> PERSIST : persist operations
+PERSIST -down-> DB
+@enduml

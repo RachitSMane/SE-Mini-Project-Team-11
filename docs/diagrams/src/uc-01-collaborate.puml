@@ -1,0 +1,59 @@
+@startuml uc-01-collaborate
+' Owner: Rachit | SRS 7.1 | UC-01 Collaborate on a board
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F5F8FC
+  BorderColor #3B5B85
+}
+skinparam actorBorderColor #3B5B85
+title UC-01 — Collaborate on a board
+
+actor Viewer
+actor Editor
+actor Owner
+actor "Version\nscheduler" as Sched <<system>>
+
+Editor -up-|> Viewer
+Owner -up-|> Editor
+
+rectangle "Real-Time Collaborative Virtual Whiteboard" {
+  usecase "View board and\nparticipants" as UC_View
+  usecase "View version history" as UC_Hist
+  usecase "Preview version" as UC_Prev
+  usecase "Draw freehand stroke" as UC_Draw
+  usecase "Add shape" as UC_Shape
+  usecase "Add text" as UC_Text
+  usecase "Edit object\n(move, restyle, delete)" as UC_Edit
+  usecase "Erase objects" as UC_Erase
+  usecase "Clear board" as UC_Clear
+  usecase "Restore version" as UC_Restore
+  usecase "Create version" as UC_Ver
+  usecase "Preview version" as UC_Prev
+  usecase "Synchronise change\nto all participants" as UC_Sync
+}
+
+Viewer --> UC_View
+Viewer --> UC_Hist
+UC_Hist <. UC_Prev : <<extend>>
+Editor --> UC_Draw
+Editor --> UC_Shape
+Editor --> UC_Text
+Editor --> UC_Edit
+Editor --> UC_Erase
+Owner --> UC_Clear
+Owner --> UC_Restore
+UC_Clear ..> UC_Ver : <<include>>
+UC_Restore ..> UC_Ver : <<include>>
+Sched --> UC_Ver
+
+UC_Draw ..> UC_Sync : <<include>>
+UC_Shape ..> UC_Sync : <<include>>
+UC_Text ..> UC_Sync : <<include>>
+UC_Edit ..> UC_Sync : <<include>>
+UC_Erase ..> UC_Sync : <<include>>
+UC_Clear ..> UC_Sync : <<include>>
+UC_Restore ..> UC_Sync : <<include>>
+@enduml

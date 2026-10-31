@@ -1,0 +1,36 @@
+@startuml component-dependencies
+' Owner: Krishna | SAD 3.3 | UML component diagram, part 2: dependencies between server components
+!pragma layout smetana
+skinparam shadowing false
+skinparam componentStyle uml2
+skinparam component {
+  BackgroundColor #F5F8FC
+  BorderColor #3B5B85
+}
+skinparam packageBorderColor #7A8CA5
+skinparam defaultFontSize 14
+skinparam ArrowFontSize 13
+
+package "Application server (Node.js)" {
+  component "COMP-03\nREST API Layer" as REST
+  component "COMP-06\nReal-time Collaboration\nServer" as RT
+  component "COMP-04\nAuth Service" as AUTH
+  component "COMP-05\nBoard & Access\nService" as ACCESS
+  component "COMP-07\nVersion History\nService" as VER
+  component "COMP-08\nPersistence Layer" as PERSIST
+}
+
+REST -down-> AUTH : verifyToken
+RT -down-> AUTH : verifyToken
+REST -down-> ACCESS : authorize
+RT -down-> ACCESS : authorize
+VER -right-> ACCESS : authorize
+REST -down-> VER : list / preview / restore
+RT -down-> VER : version triggers
+VER -up-> RT : pause queue,\nbroadcast restore
+ACCESS -up-> RT : role changes,\nrevocations
+AUTH -down-> PERSIST
+ACCESS -down-> PERSIST
+VER -down-> PERSIST
+RT -down-> PERSIST : operations
+@enduml

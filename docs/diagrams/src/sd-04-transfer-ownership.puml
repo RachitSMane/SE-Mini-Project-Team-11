@@ -1,0 +1,75 @@
+@startuml sd-04-transfer-ownership
+' Owner: Prithvi | SAD 4.2 | SD-04 Transfer board ownership
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 140
+skinparam ParticipantPadding 2
+skinparam BoxPadding 2
+skinparam defaultFontSize 12
+skinparam ParticipantBackgroundColor #F5F8FC
+skinparam ParticipantBorderColor #3B5B85
+skinparam ArrowFontSize 11
+hide footbox
+title SD-04 (part 1) — request, authentication and validation
+
+participant "Owner\nclient\n(u7)" as OC
+participant "REST API\n(COMP-03)" as REST
+participant "Auth\nService\n(COMP-04)" as AUTH
+participant "Board &\nAccess\n(COMP-05)" as AC
+participant "Persist-\nence\n(COMP-08)" as DB
+participant "Real-time\nServer\n(COMP-06)" as RT
+participant "New Owner\nclient\n(u9)" as NC
+
+== Request (FR-050) ==
+note over OC : Members dialog: "Transfer ownership" to u9;\nconfirmation dialog names u9 and the loss of\nOwner rights; Owner confirms
+OC -> REST : POST /api/v1/boards/b1/transfer-ownership\nAuthorization: Bearer <session token>\n{newOwnerId:"u9", confirm:true}
+REST -> AUTH : verifyToken (session token; guest tokens not accepted)
+AUTH --> REST : user u7
+REST -> REST : schema check: newOwnerId string, confirm == true,\nno unknown fields
+newpage SD-04 (part 2) — authorisation and eligibility check
+
+REST -> AC : transferOwnership(u7, b1, u9)
+AC -> AC : authorize(u7, b1, "transferOwnership")\nand check u9 is an Editor/Viewer member
+
+newpage SD-04 (part 3) — successful transfer
+
+== [alt 1] u7 is the Owner and u9 is an eligible member ==
+AC -> RT : pause board queue (b1)
+AC -> DB : upsert membership {b1, u7, role:"editor"}
+AC -> DB : update boards {_id:b1, ownerId:u7} set ownerId = u9
+DB --> AC : 1 document modified
+AC -> DB : delete membership {b1, u9}
+newpage SD-04 (part 4) — successful transfer (continued): notify sessions
+
+AC -> RT : ownershipChanged(b1, newOwner u9, previous u7)
+RT -> RT : update cached roles of u9's and u7's sockets
+RT -> NC : role:changed {role:"owner"}
+RT -> OC : role:changed {role:"editor"}
+RT -> RT : presence:update to room; resume board queue
+AC --> REST : ok
+REST --> OC : 200 {boardId:"b1", ownerId:"u9",\n previousOwner:{userId:"u7", role:"editor"}}
+note right of REST : Security event board.ownership_transferred logged.\nLater operations of both users are authorised\nwith the new roles.
+
+newpage SD-04 (part 5) — rejected requests
+
+== [alt 2] confirm missing or body invalid ==
+REST --> OC : 400 {error:{code:"VALIDATION_FAILED"}}
+== [alt 3] requester is an Editor or Viewer, or uses a guest token ==
+AC --> REST : FORBIDDEN
+REST --> OC : 403 {error:{code:"FORBIDDEN"}}
+== [alt 4] requester has no role, or the board does not exist ==
+AC --> REST : BOARD_NOT_FOUND
+REST --> OC : 404 {error:{code:"BOARD_NOT_FOUND"}}
+newpage SD-04 (part 6) — rejected requests (continued)
+
+== [alt 5] target is self, a guest, unknown or not a member ==
+AC --> REST : INVALID_TARGET
+REST --> OC : 400 {error:{code:"INVALID_TARGET"}}
+== [alt 6] concurrent transfer already changed the Owner ==
+AC -> DB : update boards {_id:b1, ownerId:u7} set ownerId = u9
+DB --> AC : 0 documents modified
+AC -> RT : resume board queue
+AC --> REST : FORBIDDEN (requester is no longer the Owner)
+REST --> OC : 403 {error:{code:"FORBIDDEN"}}
+note right of REST : alt 2-6 change no role; rejected attempts\nare logged as authz.denied where applicable.
+@enduml

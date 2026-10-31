@@ -1,0 +1,60 @@
+@startuml sd-05-clear
+' Owner: Rachit | SAD 4.2 | SD-05 Clear the board with interrupted-clear recovery
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 140
+skinparam ParticipantPadding 2
+skinparam BoxPadding 2
+skinparam defaultFontSize 12
+skinparam ParticipantBackgroundColor #F5F8FC
+skinparam ParticipantBorderColor #3B5B85
+skinparam ArrowFontSize 11
+hide footbox
+title SD-05 (part 1) — clear request, authorisation and before-clear version
+
+participant "Owner\nclient\n(COMP-01/02)" as OC
+participant "Real-time\nServer\n(COMP-06)" as RT
+participant "Board &\nAccess\n(COMP-05)" as AC
+participant "Version\nHistory\n(COMP-07)" as VER
+participant "Persist-\nence\n(COMP-08)" as DB
+participant "Other\nclients" as OTH
+
+== Request (FR-007) ==
+note over OC : Owner chooses "Clear board" and confirms
+OC -> RT : op:submit {boardId, clientOpId:c5, type:"board:clear"}
+RT -> RT : clear task enters the board queue\n(operations, restores and clears run one at a time)
+RT -> AC : authorize(actor, boardId, "clear")
+AC --> RT : allowed (Editor/Viewer: FORBIDDEN)
+RT -> RT : board empty? -> ack {ok:true, seq:null, noop:true}; stop
+RT -> VER : before-clear trigger (no-change rule)
+VER -> DB : insert version v (trigger "before_clear")\nif the board changed since the last version
+DB --> VER : ok (alt 2 if the write fails)
+VER --> RT : pre-clear content preserved
+
+newpage SD-05 (part 2) — commit, delete and complete
+
+== [alt 1] journalled clear ==
+RT -> DB : COMMIT: boards.pendingOp = {type:"clear",\n seq:61, preClearVersion:v}  [journaled]
+RT -> DB : delete all boardObjects of the board
+RT -> DB : COMPLETE: seq = 61, contentBytes = 0,\nunset pendingOp  [one atomic, journaled update]
+RT --> OC : ack {ok:true, clientOpId:c5, seq:61}
+RT -> OTH : op:applied {seq:61, type:"board:clear"}
+note over OC, OTH : No acknowledgement or broadcast before COMPLETE.
+
+== [alt 2] before-clear version cannot be written ==
+RT --> OC : ack {ok:false, clientOpId:c5, error:{code:"INTERNAL"}}
+note right of RT : Nothing deleted, nothing broadcast;\nop.clear_failed logged.
+
+newpage SD-05 (part 3) — start-up recovery of an interrupted clear
+
+== Crash after COMMIT; server start, before accepting connections ==
+RT -> DB : find boards with pendingOp
+DB --> RT : board b1: {type:"clear", seq:61, preClearVersion:v}
+RT -> DB : delete remaining boardObjects of the board
+RT -> DB : COMPLETE: seq = 61, contentBytes = 0, unset pendingOp
+RT -> RT : log board.clear_rolled_forward;\nthen sequence recovery and size recomputation
+note right of RT : If recovery fails (database error):\nrecovery.required logged; the server\nexits without accepting connections.
+OC -> RT : reconnect; board:join
+RT --> OC : ack {state:{seq:61, objects:[]}}
+note right of OC : The Owner never received a success ack for c5;\nafter resynchronisation the client shows the empty\nboard and the "unconfirmed changes" notice (FR-025).
+@enduml

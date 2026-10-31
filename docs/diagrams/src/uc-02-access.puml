@@ -1,0 +1,55 @@
+@startuml uc-02-access
+' Owner: Prithvi | SRS 7.2 | UC-02 Access and sharing
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F5F8FC
+  BorderColor #3B5B85
+}
+skinparam actorBorderColor #3B5B85
+title UC-02 — Access and sharing
+
+actor Visitor
+actor "Registered user" as RU
+actor Guest
+actor Owner
+
+Owner -up-|> RU
+
+rectangle "Real-Time Collaborative Virtual Whiteboard" {
+  usecase "Register account" as UC_Reg
+  usecase "Log in / Log out" as UC_Login
+  usecase "Create board" as UC_Create
+  usecase "View dashboard" as UC_Dash
+  usecase "Open board via\nshare link" as UC_Open
+  usecase "Join as guest" as UC_Guest
+  usecase "Create share link" as UC_Link
+  usecase "Revoke share link" as UC_Revoke
+  usecase "Manage members\n(change role, remove)" as UC_Members
+  usecase "Transfer ownership" as UC_Transfer
+  usecase "Delete board" as UC_Delete
+  usecase "Check permission" as UC_Perm
+}
+
+Visitor --> UC_Reg
+RU --> UC_Login
+RU --> UC_Create
+RU --> UC_Dash
+RU --> UC_Open
+Guest --> UC_Open
+UC_Guest .> UC_Open : <<extend>>
+Owner --> UC_Link
+Owner --> UC_Revoke
+Owner --> UC_Members
+Owner --> UC_Transfer
+Owner --> UC_Delete
+
+UC_Open ..> UC_Perm : <<include>>
+UC_Link ..> UC_Perm : <<include>>
+UC_Revoke ..> UC_Perm : <<include>>
+UC_Members ..> UC_Perm : <<include>>
+UC_Transfer ..> UC_Perm : <<include>>
+UC_Delete ..> UC_Perm : <<include>>
+@enduml

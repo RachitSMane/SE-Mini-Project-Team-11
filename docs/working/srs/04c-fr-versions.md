@@ -1,0 +1,27 @@
+<!-- Owner: Rachit | Reviewers: Krishna, Prithvi | Status: v1.0 -->
+
+### 4.3 Version history
+
+Description: basic version history is a mandatory core feature (official problem statement). The
+system saves numbered versions of the board automatically. All roles can view the history; only
+the Owner can restore. Restoring never deletes history: it creates a new version whose content is
+a copy of the selected version. Storage format and the retention mechanism are specified in the
+SAD (§3.6).
+
+**Version rules (DECISIONS.md D5b):**
+
+1. **Changed content.** The board has *changed content* when its current objects differ from the objects of its latest version (or when it has objects and no version exists yet).
+2. **No-change rule.** An automatic trigger — periodic, before clear, last participant left — creates a version only if the board has changed content at that moment. Otherwise no version is created, because the latest version already holds identical content.
+3. **Clear.** Before the board is cleared, the system applies the "before clear" trigger, so the pre-clear content is always preserved — in a new version if it had changed, or in the existing latest version if it had not. Clearing an already empty board has no effect and creates no version.
+4. **Periodic interval.** The interval *T* is 5 minutes (DECISIONS.md D11a), set through a configuration parameter; tests record the value configured in the build under test.
+5. **Restore.** A restore always creates a new version (trigger "restore"), even if the restored content equals the current content, so every restore is recorded. It is the only exception to the no-change rule.
+6. **Retention.** At least the 20 most recent versions are kept (FR-035). Older versions may be removed by the retention mechanism; nothing else ever modifies or deletes a version.
+
+| Req ID | Requirement (shall...) | Type | Priority | Source/Stakeholder | Acceptance criteria / Test case ref | Comments / Dependencies |
+|---|---|---|---|---|---|---|
+| FR-030 | The system shall create a version of a board automatically, subject to the no-change rule, (a) every *T* minutes while the board has changed content, (b) before the board is cleared, and (c) when the last participant leaves the board. | Functional | High | Problem statement | AC-FR-030: Each trigger creates exactly one version with the board content at that moment when the board has changed content, and no version when it has not; after a clear, the latest version contains the pre-clear content. Test: TC-005, TC-012 | *T* = 5 min (D11a); rules in §4.3 (D5b) |
+| FR-031 | The system shall show every participant of a board the list of its retained versions, newest first, with version number, creation date and time, and trigger (periodic, before clear, last participant left, or restore of version *n*). | Functional | High | Team | AC-FR-031: For Owner, Editor and Viewer the version panel lists all retained versions in descending version-number order with the four listed fields. Test: TC-012 | FR-051 |
+| FR-032 | The system shall let any participant preview a selected version read-only without changing the live board for anyone. | Functional | Medium | Team | AC-FR-032: The preview shows exactly the selected version's objects; no editing is possible in the preview; the live board of all participants, including changes made during the preview, is unaffected. Test: TC-012 | — |
+| FR-033 | The system shall let only the Owner restore a selected retained version, after confirmation, by creating a new version whose content equals the selected version and making that content the current board content; a restore shall not modify or delete any existing version. | Functional | High | Problem statement, Team (D5) | AC-FR-033: After restoring version *n*, the version list contains all previously retained versions unchanged plus one new version "restore of *n*", and the board content equals version *n*; a restore request from an Editor or Viewer is rejected and creates no version; a restore interrupted by a server failure after it was committed is completed when the server restarts, so that the board content equals version *n* and exactly one "restore of *n*" version exists; a restore whose new version would exceed the storage limit, or that fails before it was committed, is rejected and leaves the board and the version list unchanged; a new restore request (new idempotency key) always creates a new version; a retried request with the same idempotency key and version returns the recorded result (same new version number and sequence number) without restoring again or creating a version; the same key used for a different version is rejected; concurrent restores of one board are applied one at a time, each with its own version. Test: TC-013, TC-024, TC-102 | FR-051; retention per FR-035 |
+| FR-034 | After a restore, the system shall replace the board content of every connected participant with the restored content. | Functional | High | Team (D5) | AC-FR-034: All connected participants show the restored content without reloading; timing is verified under NFR-005. Test: TC-013 | NFR-005 |
+| FR-035 | The system shall retain at least the 20 most recent versions of each board until the board is deleted. | Functional | Medium | Team (D5a) | AC-FR-035: After 25 versions have been created on a board, at least the 20 most recent are listed and can be previewed and restored; a request for a version that is no longer retained returns "version not found". Test: TC-014 | Value per D5a; mechanism in SAD §3.6 |
