@@ -156,6 +156,10 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
       }
       rerender();
     });
+    // The Owner renamed the board from the dashboard (issue #13): show the new title without a reload.
+    socket.on('board:renamed', (evt) => {
+      if (evt?.boardId === boardId && typeof evt.title === 'string') setTitle(evt.title);
+    });
     socket.on('connect_error', (err) => {
       if (err?.data?.code !== 'UNAUTHENTICATED') return; // network errors: keep retrying
       socket.disconnect();

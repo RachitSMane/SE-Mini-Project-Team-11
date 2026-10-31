@@ -115,6 +115,29 @@ export class AccessService {
     logger.security({ event: 'board.deleted', requestId: ctx.requestId, actor, boardId, outcome: 'success' });
   }
 
+  /**
+   * Rename a board (issue #13). Owner only; the title follows the creation rule (FR-042). Runs in
+   * the board queue so it cannot interleave with a concurrent delete or ownership transfer, and
+   * open board views are told the new title without a reload.
+   */
+  async renameBoard(actor, boardId, title, ctx) {
+    await this.authorize(actor, boardId, ACTIONS.RENAME, ctx);
+    const board = await this.queues.run(boardId, async () => {
+      // Re-check inside the queue: the board may have been deleted or transferred meanwhile.
+      const { role } = await this.authorize(actor, boardId, ACTIONS.RENAME, ctx);
+      const updated = await Board.findOneAndUpdate(
+        { _id: boardId },
+        { $set: { title: title.trim() } },
+        { new: true, projection: { title: 1, updatedAt: 1 }, ...DURABLE },
+      ).lean();
+      if (!updated) throw new AppError('BOARD_NOT_FOUND');
+      this.realtime?.boardRenamed(boardId, updated.title);
+      return { ...updated, role };
+    });
+    logger.info('board.renamed', { requestId: ctx.requestId, boardId: String(boardId), actorId: actor.id });
+    return { id: String(board._id), title: board.title, role: board.role, updatedAt: board.updatedAt };
+  }
+
   // ---- Share links (FR-045 to FR-048, SEC-REQ-004) ----
   async createLink(actor, boardId, { role, expiresIn = '7d' }, ctx) {
     await this.authorize(actor, boardId, ACTIONS.MANAGE_LINKS, ctx);

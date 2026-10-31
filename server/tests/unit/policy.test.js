@@ -11,6 +11,7 @@ const SRS_MATRIX = {
   [ACTIONS.MANAGE_MEMBERS]: ['owner'],
   [ACTIONS.TRANSFER]: ['owner'],
   [ACTIONS.DELETE]: ['owner'],
+  [ACTIONS.RENAME]: ['owner'], // board rename (issue #13), same rule as delete
 };
 
 describe('permission matrix (FR-051)', () => {

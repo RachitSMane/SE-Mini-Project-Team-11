@@ -228,6 +228,11 @@ export class RealtimeServer {
     }
   }
 
+  /** The Owner renamed the board (issue #13): open views update their title without a reload. */
+  boardRenamed(boardId, title) {
+    this.nsp.to(room(String(boardId))).emit('board:renamed', { boardId: String(boardId), title });
+  }
+
   evict(boardId) {
     this.store.evict(boardId);
   }

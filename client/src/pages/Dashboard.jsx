@@ -1,10 +1,58 @@
-// Dashboard (FR-042 to FR-044): boards the user owns or is a member of; create, open, delete.
+// Dashboard (FR-042 to FR-044): boards the user owns or is a member of; create, open, rename
+// (issue #13), delete.
 import { useCallback, useEffect, useState } from 'react';
 import { LIMITS } from '@wb/shared/objects';
 import { api } from '../api.js';
 import { Icon, Logo } from '../icons.jsx';
 import { Link, navigate } from '../router.jsx';
-import { ConfirmDialog, ErrorText, formatTime, initials, ROLE_LABEL } from '../ui.jsx';
+import { ConfirmDialog, ErrorText, formatTime, initials, Modal, ROLE_LABEL } from '../ui.jsx';
+
+/** Rename dialog (Owner only). Validates the 1–100 character rule before sending. */
+function RenameDialog({ board, token, onRenamed, onClose, onUnauthenticated }) {
+  const [title, setTitle] = useState(board.title);
+  const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const submit = async (e) => {
+    e.preventDefault();
+    const next = title.trim();
+    if (!next) {
+      setError('Enter a title of 1–100 characters.');
+      return;
+    }
+    if (next === board.title) {
+      onClose();
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      onRenamed(await api('PATCH', `/boards/${board.id}`, { token, body: { title: next } }));
+    } catch (err) {
+      if (err.status === 401) onUnauthenticated();
+      else setError(err.message);
+      setBusy(false);
+    }
+  };
+  return (
+    <Modal title="Rename board" onClose={busy ? undefined : onClose} labelledBy="rename-title">
+      <form onSubmit={submit}>
+        <label>
+          Board title
+          <input value={title} maxLength={LIMITS.MAX_TITLE} onChange={(e) => setTitle(e.target.value)} aria-invalid={Boolean(error)} data-testid="rename-input" />
+        </label>
+        <ErrorText error={error} />
+        <div className="actions">
+          <button type="button" onClick={onClose} disabled={busy}>
+            Cancel
+          </button>
+          <button type="submit" className="primary" disabled={busy} data-testid="rename-save">
+            {busy ? 'Saving…' : 'Save'}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
 
 export default function Dashboard({ session, onLogout, onUnauthenticated }) {
   const [boards, setBoards] = useState(null);
@@ -12,6 +60,7 @@ export default function Dashboard({ session, onLogout, onUnauthenticated }) {
   const [error, setError] = useState(null);
   const [creating, setCreating] = useState(false);
   const [confirm, setConfirm] = useState(null);
+  const [renaming, setRenaming] = useState(null);
 
   const handle = useCallback(
     (err) => {
@@ -133,9 +182,14 @@ export default function Dashboard({ session, onLogout, onUnauthenticated }) {
                     <td className="time">{formatTime(b.updatedAt)}</td>
                     <td className="actions-cell">
                       {b.role === 'owner' && (
-                        <button type="button" className="danger small" onClick={() => remove(b)}>
-                          Delete
-                        </button>
+                        <>
+                          <button type="button" className="small" onClick={() => setRenaming(b)}>
+                            Rename
+                          </button>{' '}
+                          <button type="button" className="danger small" onClick={() => remove(b)}>
+                            Delete
+                          </button>
+                        </>
                       )}
                     </td>
                   </tr>
@@ -145,6 +199,18 @@ export default function Dashboard({ session, onLogout, onUnauthenticated }) {
           )}
         </div>
         <ConfirmDialog confirm={confirm} onClose={() => setConfirm(null)} />
+        {renaming && (
+          <RenameDialog
+            board={renaming}
+            token={session.token}
+            onClose={() => setRenaming(null)}
+            onUnauthenticated={onUnauthenticated}
+            onRenamed={() => {
+              setRenaming(null);
+              load();
+            }}
+          />
+        )}
       </main>
     </>
   );

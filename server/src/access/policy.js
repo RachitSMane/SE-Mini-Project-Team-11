@@ -8,6 +8,7 @@ export const ACTIONS = Object.freeze({
   MANAGE_MEMBERS: 'manage_members', // change roles, remove members
   TRANSFER: 'transfer',
   DELETE: 'delete',
+  RENAME: 'rename', // rename the board (issue #13); Owner only, like delete
 });
 
 export const ROLES = Object.freeze(['owner', 'editor', 'viewer']);
@@ -21,6 +22,7 @@ const MATRIX = Object.freeze({
   manage_members: ['owner'],
   transfer: ['owner'],
   delete: ['owner'],
+  rename: ['owner'],
 });
 
 export function permits(role, action) {
