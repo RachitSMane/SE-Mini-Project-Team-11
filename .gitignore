@@ -1,0 +1,32 @@
+# Supplied instructor templates: kept locally only (repository is public)
+docs/templates/*.docx
+
+# Local PlantUML download (see docs/README.md)
+tools/plantuml/
+
+# Word / Office lock and temp files
+~$*
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+node_modules
+
+# Application (local secrets, data, logs and build output)
+.env
+*.env
+!.env.example
+.data/
+logs/
+*.log
+client/dist/
+coverage/
+test-results/
+playwright-report/
