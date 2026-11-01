@@ -1,0 +1,72 @@
+@startuml sd-03-share-link
+' Owner: Prithvi | SAD 4.2 | SD-03 Join via share link and revocation
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 140
+skinparam ParticipantPadding 2
+skinparam BoxPadding 2
+skinparam defaultFontSize 12
+skinparam ParticipantBackgroundColor #F5F8FC
+skinparam ParticipantBorderColor #3B5B85
+skinparam ArrowFontSize 11
+hide footbox
+title SD-03 (part 1) — guest resolves a share link
+
+participant "Guest\nclient\n(COMP-01/02)" as GC
+participant "REST API\n(COMP-03)" as REST
+participant "Board &\nAccess\n(COMP-05)" as AC
+participant "Auth\nService\n(COMP-04)" as AUTH
+participant "Persist-\nence\n(COMP-08)" as DB
+participant "Real-time\nServer\n(COMP-06)" as RT
+participant "Owner\nclient" as OC
+
+== Resolve link (FR-046, SEC-REQ-004) ==
+note over GC : Guest opens https://<host>/join#<token>\nand enters the display name "Asha"
+GC -> REST : POST /api/v1/links/resolve {token, displayName:"Asha"}
+REST -> AC : resolveLink(token)
+AC -> DB : find shareLink by SHA-256(token)
+DB --> AC : {linkId, boardId, role:"editor", expiresAt, revokedAt:null}
+
+newpage SD-03 (part 2) — valid link: guest token issued
+
+== [alt 1] link valid (not expired, not revoked) ==
+AC -> AUTH : issueGuestToken(boardId, linkId, role,\n exp = min(expiresAt, now + 24 h))
+AUTH --> AC : guest JWT
+AC --> REST : {boardId, role, guestToken}
+REST --> GC : 200 {boardId, role:"editor", guestToken}
+
+newpage SD-03 (part 3) — guest joins the board
+
+== [alt 1, continued] join the board room (FR-024, SEC-REQ-002) ==
+GC -> RT : connect (handshake auth: guestToken)
+RT -> AUTH : verifyToken(guestToken)
+AUTH --> RT : guest, boardId, linkId, role
+GC -> RT : board:join {boardId}
+RT -> AC : authorize(guest, boardId, "view") (re-checks link)
+AC --> RT : allowed
+RT --> GC : ack {ok, role, state:{seq, objects[]}, participants[]}
+RT -> RT : broadcast presence:update to room
+
+newpage SD-03 (part 4) — expired, revoked or unknown link
+
+== [alt 2] link expired or revoked (FR-048) ==
+AC --> REST : LINK_EXPIRED or LINK_REVOKED
+REST --> GC : 410 {error:{code:"LINK_EXPIRED" or "LINK_REVOKED"}}
+
+== [alt 3] unknown token ==
+AC --> REST : LINK_NOT_FOUND
+REST --> GC : 404 {error:{code:"LINK_NOT_FOUND"}}
+
+newpage SD-03 (part 5) — Owner revokes the link
+
+== Later: Owner revokes the link (FR-047) ==
+OC -> REST : DELETE /api/v1/boards/{boardId}/links/{linkId}\nAuthorization: Bearer <session token>
+REST -> AC : authorize(owner, boardId, "manageLinks"); revoke
+AC -> DB : set revokedAt = now
+AC -> RT : linkRevoked(boardId, linkId)
+RT -> GC : access:revoked {reason:"LINK_REVOKED"}
+RT -> GC : disconnect (within 5 s)
+RT -> RT : presence:update to remaining participants
+REST --> OC : 204 No Content
+note right of REST : Security event link.revoked logged.\nRegistered members admitted by the link keep\ntheir membership (FR-047).
+@enduml

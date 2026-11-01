@@ -1,0 +1,96 @@
+@startuml sd-02-version-restore
+' Owner: Rachit | SAD 4.2 | SD-02 Restore a previous version (journalled, idempotent)
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 140
+skinparam ParticipantPadding 2
+skinparam BoxPadding 2
+skinparam defaultFontSize 12
+skinparam ParticipantBackgroundColor #F5F8FC
+skinparam ParticipantBorderColor #3B5B85
+skinparam ArrowFontSize 11
+hide footbox
+title SD-02 (part 1) — restore request and authorisation
+
+participant "Owner\nclient\n(COMP-01/02)" as OC
+participant "REST API\n(COMP-03)" as REST
+participant "Version\nHistory\n(COMP-07)" as VER
+participant "Board &\nAccess\n(COMP-05)" as AC
+participant "Persist-\nence\n(COMP-08)" as DB
+participant "Real-time\nServer\n(COMP-06)" as RT
+participant "Other\nclients\n(all)" as OTH
+
+== Request (FR-033) ==
+note over OC : Owner selects version 12, chooses "Restore"\nand confirms; client creates key K (UUID)
+OC -> REST : POST .../versions/12/restore\nBearer <session token>\nIdempotency-Key: K
+REST -> REST : verify token; validate parameters
+REST -> VER : restore(actor, boardId, 12, K)
+VER -> RT : enqueue restore task in the board queue
+note right of RT : Operations and other restore or\nclear requests arriving now wait\nin the queue until the task ends.
+VER -> AC : authorize(actor, boardId, "restore")
+AC --> VER : allowed (alt 2 if denied)
+newpage SD-02 (part 2) — idempotency check and snapshot
+
+VER -> DB : find version {boardId, requestId: K}
+DB --> VER : none (alt 4 if found)
+VER -> DB : load version 12 snapshot
+DB --> VER : objects[]
+VER -> VER : size check: M4 of version 19\n<= 16,711,680 bytes (alt 3 if not)
+
+newpage SD-02 (part 3) — commit and version insert
+
+== [alt 1] allowed, new key: journalled restore ==
+VER -> DB : COMMIT: boards.pendingOp =\n{type:"restore", seq:88, version:19,\n restoredFrom:12, requestId:K}\n[journaled]
+VER -> DB : insert version 19\n{trigger:"restore", restoredFrom:12,\n boardSeq:88, requestId:K, objects[]}
+newpage SD-02 (part 4) — replace objects and complete
+
+VER -> DB : delete boardObjects of board;\ninsert snapshot objects (updatedSeq 88)
+VER -> DB : COMPLETE: seq = 88, contentBytes = M3,\nunset pendingOp  [one atomic, journaled update]
+VER -> DB : apply retention (keep 20 newest)
+note right of DB : A crash after COMMIT and before COMPLETE\nis completed by start-up recovery (part 5).
+
+newpage SD-02 (part 5) — broadcast and response
+
+== [alt 1, continued] only after COMPLETE ==
+VER -> RT : publishRestore(boardId,\nseq 88, objects[], version 19)
+RT -> OC : board:state {seq:88, objects[]}
+RT -> OTH : board:state {seq:88, objects[]}
+RT -> OC : version:restored {restoredFrom:12, newVersion:19}
+RT -> OTH : version:restored {restoredFrom:12, newVersion:19}
+VER -> RT : task finished (queue continues)
+VER --> REST : {newVersion:19, restoredFrom:12, seq:88}
+REST --> OC : 201 Created {newVersion:19,\nrestoredFrom:12, seq:88}
+note over OC, OTH : FR-034; target 3 s (NFR-005, verified by TC-013 on 12-10-2026).
+
+newpage SD-02 (part 6) — rejected or failed requests
+
+== [alt 2] actor is an Editor or Viewer ==
+AC --> VER : denied
+VER --> REST : FORBIDDEN
+REST --> OC : 403 {error:{code:"FORBIDDEN"}}
+== [alt 3] size check refused or the COMMIT write fails ==
+DB --> VER : error
+VER --> REST : INTERNAL (board unchanged, logged version.restore_failed)
+REST --> OC : 500 {error:{code:"INTERNAL"}}
+newpage SD-02 (part 7) — repeated request
+
+== [alt 4] retry with the same key K ==
+DB --> VER : version 19 exists with requestId K
+VER --> REST : recorded result from version 19\n{newVersion:19, restoredFrom:12, seq:88}\n(nothing applied again)
+REST --> OC : 201 Created (no new version)
+note right of REST : Same key with a different version number:\n409 IDEMPOTENCY_KEY_REUSED.
+
+newpage SD-02 (part 8) — start-up recovery of an interrupted restore
+
+== Server start, before accepting connections (SAD 3.6) ==
+RT -> DB : find boards with pendingOp
+DB --> RT : board b1: {type:"restore", seq:88, version:19, restoredFrom:12}
+RT -> DB : insert version 19 if missing (from snapshot 12)
+RT -> DB : delete boardObjects; insert snapshot objects (updatedSeq 88)
+newpage SD-02 (part 9) — start-up recovery (continued)
+
+RT -> DB : COMPLETE: seq = 88, contentBytes, unset pendingOp
+RT -> RT : log version.restore_rolled_forward;\nthen sequence recovery and size recomputation
+note over OC, OTH : Clients reconnect, resynchronise (FR-025) and see the\nrestored board; the Owner's retry with key K returns 201.
+note right of RT : If recovery fails (database error):\nrecovery.required logged; the server exits\nwithout accepting connections.
+@enduml
