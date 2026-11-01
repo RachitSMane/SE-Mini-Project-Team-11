@@ -102,7 +102,7 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
       (b) => setTitle(b.title),
       (err) => {
         if (err.status === 401 && session) onUnauthenticated();
-        else setEnded(ENDED[err.code] || err.message);
+        else setEnded(ENDED[err.code] || describeError(err));
       },
     );
     const socket = io('/board', {
@@ -131,7 +131,7 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
           push(data.message, 'warning', 8000);
           break;
         case 'join-failed':
-          setEnded(ENDED[data.code] || data.message);
+          setEnded(ENDED[data.code] || describeError(data));
           socket.disconnect();
           break;
         case 'revoked':

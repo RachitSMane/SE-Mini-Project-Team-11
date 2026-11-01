@@ -155,3 +155,23 @@ export function parseStrokeWidth(value) {
 export function parseColor(value) {
   return /^#[0-9A-Fa-f]{6}$/.test(value) ? value.toUpperCase() : null;
 }
+
+/**
+ * New object id (issue #15): a random RFC 4122 version-4 UUID, which matches the server's object id
+ * rule (validation.js: 1–64 of A–Z a–z 0–9 _ -).
+ * crypto.randomUUID() exists only in secure contexts (HTTPS or localhost). When the app is opened over
+ * plain HTTP from another device on the local network (e.g. http://192.168.1.20:5173 to test Safari on
+ * a Mac or phone) it is undefined and every drawing gesture would throw. crypto.getRandomValues() is
+ * available in every context, so the UUID is built from it in that case.
+ * @param {Crypto} [c] Web Crypto implementation (a parameter so the fallback can be unit-tested)
+ */
+export function newObjectId(c = globalThis.crypto) {
+  if (typeof c?.randomUUID === 'function') return c.randomUUID();
+  const b = new Uint8Array(16);
+  if (typeof c?.getRandomValues === 'function') c.getRandomValues(b);
+  else for (let i = 0; i < 16; i += 1) b[i] = Math.floor(Math.random() * 256); // no Web Crypto at all
+  b[6] = (b[6] & 0x0f) | 0x40; // version 4
+  b[8] = (b[8] & 0x3f) | 0x80; // RFC 4122 variant
+  const hex = [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}

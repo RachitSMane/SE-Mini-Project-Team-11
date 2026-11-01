@@ -7,7 +7,10 @@
 //   msedge  — installed Microsoft Edge (stable channel)
 //   firefox — Playwright's bundled Firefox build. NOTE: this is a patched build, not the stable
 //             Mozilla Firefox release that NFR-006 / TC-021 require; it is supplementary evidence only.
-// `npm run test:e2e:browsers` runs chrome, msedge and firefox (TC-021).
+//   webkit  — Playwright's WebKit build, the engine of Safari (issue #25). NOTE: this is not Apple
+//             Safari (no macOS/iOS integration, different network stack); it is the closest engine
+//             test available on Windows and Linux. Real Safari still needs a manual check on a Mac.
+// `npm run test:e2e:browsers` runs chrome, msedge, firefox and webkit (TC-021, issue #25).
 const { defineConfig, devices } = require('@playwright/test');
 
 const VIEWPORT = { width: 1280, height: 720 }; // NFR-006 minimum viewport
@@ -16,6 +19,7 @@ const PROJECTS = {
   chrome: { ...devices['Desktop Chrome'], channel: 'chrome' },
   msedge: { ...devices['Desktop Edge'], channel: 'msedge' },
   firefox: { ...devices['Desktop Firefox'] },
+  webkit: { ...devices['Desktop Safari'] },
 };
 const wanted = (process.env.E2E_BROWSERS || 'chromium').split(',').map((s) => s.trim()).filter(Boolean);
 for (const name of wanted) if (!PROJECTS[name]) throw new Error(`Unknown E2E browser "${name}" (use ${Object.keys(PROJECTS).join(', ')})`);
