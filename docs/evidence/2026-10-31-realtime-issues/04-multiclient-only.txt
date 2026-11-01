@@ -1,0 +1,15 @@
+$ npm run test:integration -- --testPathPatterns multiClient|sync.test --verbose
+# node v24.22.2, 2026-10-31T14:00:23Z
+
+> test:integration
+> node --experimental-vm-modules node_modules/jest/bin/jest.js --selectProjects integration --runInBand --testPathPatterns multiClient|sync.test --verbose
+
+Running one project: integration
+(node:21992) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Test Suites: 2 passed, 2 total
+Tests:       34 passed, 34 total
+Snapshots:   0 total
+Time:        58.815 s, estimated 60 s
+Ran all test suites matching multiClient|sync.test.
+# exit 0

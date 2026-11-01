@@ -1,0 +1,7 @@
+$ npm run lint
+# node v24.22.2, 2026-10-31T13:55:33Z
+
+> lint
+> eslint .
+
+# exit 0

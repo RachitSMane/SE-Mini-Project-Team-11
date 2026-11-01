@@ -149,20 +149,24 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
           break;
         case 'disconnected':
           outbox.clear();
-          // The server closes sockets whose token has expired; Socket.IO does not reconnect those.
+          // The server closes sockets whose token has expired. Socket.IO does not reconnect those; the
+          // sync module retries once and an UNAUTHENTICATED handshake ends in connect_error below.
+          // An expired guest token goes straight back to the guest entry page.
           if (data === 'io server disconnect' && guestTokenExpired()) returnToGuestEntry();
           break;
         default:
       }
       rerender();
     });
-    socket.on('connect_error', (err) => {
-      if (err?.data?.code !== 'UNAUTHENTICATED') return; // network errors: keep retrying
+    const onConnectError = (err) => {
+      if (err?.data?.code !== 'UNAUTHENTICATED') return; // network errors: Socket.IO keeps retrying
+      sync.close();
       socket.disconnect();
       if (session) onUnauthenticated();
       else if (guestTokenExpired()) returnToGuestEntry();
       else setEnded(ENDED.UNAUTHENTICATED);
-    });
+    };
+    socket.on('connect_error', onConnectError);
     if (TEST_BUILD) {
       window.__wbTest = {
         exportState: () => sync.exportState(),
@@ -171,9 +175,12 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
       };
     }
     return () => {
+      // Unmount or new board/token: remove every listener and close this connection, so a
+      // re-run of the effect (or React StrictMode's double mount) never leaves a second live socket.
       unsub();
       outbox.clear();
       sync.close();
+      socket.off('connect_error', onConnectError);
       socket.disconnect();
       if (TEST_BUILD) delete window.__wbTest;
     };

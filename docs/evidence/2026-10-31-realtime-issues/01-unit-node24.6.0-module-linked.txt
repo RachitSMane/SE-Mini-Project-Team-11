@@ -1,0 +1,21 @@
+$ npm run test:unit
+# node v24.6.0, 2026-10-31T13:55:31Z
+
+> test:unit
+> node --experimental-vm-modules node_modules/jest/bin/jest.js --selectProjects unit
+
+Running one project: unit
+(node:18000) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL unit shared/tests/syncClient.test.js
+  ● Test suite failed to run
+
+    module is already linked
+
+
+Test Suites: 1 failed, 4 passed, 5 total
+Tests:       48 passed, 48 total
+Snapshots:   0 total
+Time:        0.631 s, estimated 1 s
+Ran all test suites.
+# exit 1

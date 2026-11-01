@@ -447,6 +447,44 @@ Uncommitted working tree on base commit 82af885.
 - This is not the four-member review of the test summary required by the STP exit criteria; that review
   is still outstanding (STP §14).
 
+## 15. Session 15 (31-10-2026): issues #7, #11, #18, #22, #24 — real-time sync hardening
+
+Windows 11, MongoDB 8.2 (throw-away `mongod` through `MONGOD_BIN`). Evidence:
+`docs/evidence/2026-10-31-realtime-issues/`. STP statuses (§5) are unchanged.
+
+**Environment findings (#7).**
+
+- After the project folder was copied, `node_modules/@wb/{client,server,shared}` were empty folders
+  (broken workspace links), so `@wb/shared` could not be resolved. Fixed with `npm install`; the
+  lockfile was left unchanged (npm 11.5 would only have dropped `libc` metadata).
+- With Node.js 24.6.0 every Jest suite that imports a module both directly and through another module
+  fails with `module is already linked` (Jest 30.5 uses Node's `linkRequests` API, supported by Jest from
+  Node.js 24.9) — `01-unit-node24.6.0-module-linked.txt`. `npm test` passes on 22.23.4 and 24.22.2, so
+  `engines` is now `^22.12.0 || >=24.9.0`; README prerequisites and troubleshooting updated.
+
+**Changes.**
+
+| Issue | Change |
+|---|---|
+| #18 | `shared/src/syncClient.js`: after a server-initiated close (`io server disconnect`, e.g. an expired token), which Socket.IO never retries, the sync module reconnects once after 500 ms; an `UNAUTHENTICATED` handshake then leads to a new login (before: a registered user stayed on "Disconnected — reconnecting…" for good). The retry is cancelled by `close()`, by revocation and by any earlier reconnect; a join acknowledgement arriving after `close()` is ignored. `client/src/board/BoardPage.jsx`: the `connect_error` handler is removed on unmount and closes the sync client before stopping. |
+| #24 | `server/src/realtime/boardEngine.js`: `board:clear` is now schema-validated like every other type (a clear with a non-empty payload was accepted, contrary to API-01). `syncClient.js`: `op:applied` for another board is ignored; malformed `op:applied`, `board:state` and join states are rejected (`invalid-event`) and repaired from the server; an accepted operation that does not fit the local copy (update/delete of a missing object, add of an existing id) triggers a resynchronising join (`diverged`). |
+| #22 | New `server/tests/integration/multiClient.test.js` (23 tests, five simultaneous clients incl. a guest) and `shared/tests/syncLifecycle.test.js` (25 tests). |
+| #11 | Already implemented (API-01); verified by the tests above and E2E. |
+
+**Results** (all exit 0 except the documented 24.6.0 run):
+
+| Check | Node.js | Result | Evidence |
+|---|---|---|---|
+| `npm run lint` | 24.22.2 | no findings | `02-lint.txt` |
+| `npm test` | 24.22.2 | 16 suites, **134** passed (86 before) | `03-npm-test-node24.22.2.txt` |
+| `npm test` | 22.23.4 | 16 suites, **134** passed | `08-npm-test-node22.23.4.txt` |
+| multiClient + sync suites | 24.22.2 | 34 passed (also 3 earlier repeats, 34/34 each, logs not kept) | `04-multiclient-only.txt` |
+| `npm run build` | 24.22.2 | built; no `__wbTest` in the production bundle | `05-…`, `07-build-production-after-e2e.txt` |
+| `npm run test:e2e` (Chromium) | 24.22.2 | **10** passed | `06-e2e-chromium.txt` |
+| `npm run dev` smoke | 24.22.2 | `/api/v1/health` 200 through the Vite proxy; Socket.IO handshake through the proxy refused with `UNAUTHENTICATED` without a token; client page 200 | not retained (manual) |
+
+Not run in this session: `npm run perf`, `npm run test:e2e:browsers`, manual multi-browser testing.
+
 ## Run locally
 
 ```sh

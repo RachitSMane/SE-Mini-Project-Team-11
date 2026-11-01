@@ -353,8 +353,14 @@ test('FR-025: a silently lost connection is detected by the heartbeat within 20 
   const { o } = await setup();
   const disconnected = onceKind(o, 'disconnected');
   const t0 = Date.now();
-  // Simulated dead network: the client stops receiving every packet (data and server pings).
-  o.socket.io.engine.transport.removeAllListeners('packet');
+  // Simulated dead network: nothing from the server reaches the client any more, neither data, server
+  // pings nor the WebSocket close frame. Dropping only the parsed packets is not enough: the server's own
+  // heartbeat (same 10 s + 10 s) times out at about the same moment and closes the WebSocket, and that
+  // close frame would still arrive and be reported as 'transport close', racing the client's heartbeat.
+  // On a really dead network the close frame is lost too, so only the client heartbeat can detect it.
+  const { ws } = o.socket.io.engine.transport;
+  ws.onmessage = null;
+  ws.onclose = null;
   expect(await disconnected).toBe('ping timeout');
   const detectedMs = Date.now() - t0;
   expect(detectedMs).toBeLessThanOrEqual(20_500); // pingInterval 10 s + pingTimeout 10 s (defaults: 20–45 s)

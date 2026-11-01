@@ -2,13 +2,50 @@
 // Keeps `confirmed` (server state up to lastSeq), `pending` (own unacknowledged operations) and
 // `buffer` (out-of-order events). Used unchanged by the browser client and by the scripted
 // clients of the integration tests and the latency harness, as required by SRS §5 (D7b).
-import { applyOperation, canonicalState } from './objects.js';
+import { applyOperation, canonicalState, KINDS, OP_TYPES } from './objects.js';
 
 export const SYNC_DEFAULTS = Object.freeze({
   ackTimeoutMs: 10_000, // D6b
   gapTimeoutMs: 1_000, // D6b
   maxBuffer: 100, // D6b
+  // Socket.IO never retries a connection that the server closed ('io server disconnect'); the
+  // sync module then reconnects once itself after this delay (same as reconnectionDelay, D6b).
+  reconnectOnServerDisconnect: true,
+  serverReconnectDelayMs: 500,
 });
+
+const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+const isSeq = (v, min) => Number.isSafeInteger(v) && v >= min;
+
+/**
+ * Structural check of an incoming sequenced event (`op:applied`, API-01). Returns null when the
+ * event is well formed, otherwise a short reason. The server validates every operation before it
+ * is sequenced; this guards the client state against malformed or foreign events.
+ */
+export function sequencedEventProblem(evt, boardId) {
+  if (!isPlainObject(evt)) return 'not an object';
+  if (evt.boardId !== boardId) return 'other board';
+  if (!isSeq(evt.seq, 1)) return 'invalid seq';
+  if (!OP_TYPES.includes(evt.type)) return 'unknown type';
+  if (!isPlainObject(evt.payload)) return 'invalid payload';
+  if (evt.type !== 'board:clear' && typeof evt.payload.id !== 'string') return 'missing object id';
+  if (evt.type === 'object:add' && !KINDS.includes(evt.payload.kind)) return 'unknown kind';
+  return null;
+}
+
+/** Structural check of a full board state (join acknowledgement, `board:state`). */
+export function stateProblem(state) {
+  if (!isPlainObject(state)) return 'not an object';
+  if (!isSeq(state.seq, 0)) return 'invalid seq';
+  if (!Array.isArray(state.objects)) return 'objects is not an array';
+  const ids = new Set();
+  for (const o of state.objects) {
+    if (!isPlainObject(o) || typeof o.id !== 'string' || !KINDS.includes(o.kind)) return 'invalid object';
+    if (ids.has(o.id)) return 'duplicate object id';
+    ids.add(o.id);
+  }
+  return null;
+}
 
 let opCounter = 0;
 function newClientOpId() {
@@ -38,13 +75,18 @@ export class SyncClient {
     this.participants = [];
     this.listeners = new Set();
     this.gapTimer = null;
+    this.reconnectTimer = null;
+    this.diverged = false;
     this.viewCache = null;
     this.hasJoinedOnce = false;
     this.closed = false;
     this.handlers = {
-      connect: () => this.join({ reconnect: this.hasJoinedOnce }),
+      connect: () => {
+        this.clearReconnectTimer();
+        this.join({ reconnect: this.hasJoinedOnce });
+      },
       disconnect: (reason) => this.onDisconnect(reason),
-      'op:applied': (evt) => this.receiveSequenced({ ...evt, own: false }),
+      'op:applied': (evt) => this.receiveRemote(evt),
       'board:state': (evt) => this.receiveState(evt),
       'presence:update': (evt) => this.receivePresence(evt),
       'role:changed': (evt) => this.receiveRole(evt),
@@ -92,9 +134,15 @@ export class SyncClient {
     }
     return new Promise((resolve) => {
       this.socket.emit('board:join', { boardId: this.boardId }, (ack) => {
-        if (!ack || !ack.ok) {
+        if (this.closed) {
+          resolve(ack);
+          return;
+        }
+        const problem = ack?.ok ? stateProblem(ack.state) : null;
+        if (!ack || !ack.ok || problem) {
           this.status = 'error';
-          this.emitEvent('join-failed', ack?.error || { code: 'INTERNAL', message: 'Join failed' });
+          const error = problem ? { code: 'INTERNAL', message: `Invalid board state received (${problem}).` } : ack?.error;
+          this.emitEvent('join-failed', error || { code: 'INTERNAL', message: 'Join failed' });
           this.changed();
           resolve(ack);
           return;
@@ -124,6 +172,7 @@ export class SyncClient {
     this.lastSeq = state.seq;
     this.buffer.clear();
     this.clearGapTimer();
+    this.diverged = false;
   }
 
   discardPending() {
@@ -178,6 +227,20 @@ export class SyncClient {
     if (i >= 0) this.pending.splice(i, 1);
   }
 
+  /**
+   * `op:applied` from another participant. Events for another board are ignored; malformed
+   * events are ignored and reported ('invalid-event'). If an ignored event was the next one in
+   * sequence, the resulting gap is repaired by the usual gap timer (rule 4).
+   */
+  receiveRemote(evt) {
+    const problem = sequencedEventProblem(evt, this.boardId);
+    if (problem) {
+      if (problem !== 'other board') this.emitEvent('invalid-event', { event: 'op:applied', reason: problem, seq: evt?.seq });
+      return;
+    }
+    this.receiveSequenced({ ...evt, own: false });
+  }
+
   /** Rules 2–4 of SAD §4.1.3. */
   receiveSequenced(evt) {
     if (this.status !== 'ready' && !evt.own) {
@@ -198,6 +261,7 @@ export class SyncClient {
       }
       if (this.buffer.size === 0) this.clearGapTimer();
       this.changed();
+      if (this.diverged) this.resync('diverged');
       return;
     }
     this.buffer.set(evt.seq, evt);
@@ -209,7 +273,12 @@ export class SyncClient {
   }
 
   applySequenced(evt) {
-    applyOperation(this.confirmed, evt.type, evt.payload);
+    // The server only sequences an add for a new id and an update or delete for an existing
+    // object. If that does not hold locally, this copy has diverged from the server's state:
+    // apply what can be applied, then replace the state with a resynchronising join.
+    const { type, payload } = evt;
+    if (type === 'object:add' && this.confirmed.has(payload.id)) this.diverged = true;
+    if (!applyOperation(this.confirmed, type, payload)) this.diverged = true;
     this.lastSeq = evt.seq;
     if (this.keepAppliedLog) this.appliedSeqs.push(evt.seq);
     if (evt.own && evt.entry) this.removePending(evt.entry);
@@ -223,13 +292,21 @@ export class SyncClient {
 
   resync(reason) {
     this.clearGapTimer();
+    this.diverged = false;
     this.emitEvent('resync', { reason });
     return this.join({ reconnect: false, gapRepair: true });
   }
 
   /** board:state after a restore (FR-034): replace confirmed, keep pending. */
   receiveState(evt) {
-    if (evt.boardId !== this.boardId) return;
+    if (!isPlainObject(evt) || evt.boardId !== this.boardId) return;
+    const problem = stateProblem(evt);
+    if (problem) {
+      // Never install a malformed state; fetch the authoritative one instead.
+      this.emitEvent('invalid-event', { event: 'board:state', reason: problem });
+      if (this.status === 'ready') this.resync('invalid-state');
+      return;
+    }
     this.replaceConfirmed(evt);
     this.changed();
     this.emitEvent('state-replaced', evt);
@@ -272,6 +349,27 @@ export class SyncClient {
     for (const p of this.pending) clearTimeout(p.timer);
     this.changed();
     this.emitEvent('disconnected', reason);
+    // Access revocations close the client first (access:revoked), so a server-initiated close that
+    // gets here is typically an expired token. Socket.IO does not retry these; reconnect once:
+    // either the connection is accepted again, or the handshake fails with UNAUTHENTICATED
+    // (connect_error), which the application turns into a new login or a return to the guest page.
+    if (reason === 'io server disconnect' && this.opts.reconnectOnServerDisconnect) this.scheduleReconnect();
+  }
+
+  scheduleReconnect() {
+    this.clearReconnectTimer();
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = null;
+      if (!this.closed && !this.socket.connected) {
+        this.emitEvent('reconnecting', { reason: 'io server disconnect' });
+        this.socket.connect();
+      }
+    }, this.opts.serverReconnectDelayMs);
+  }
+
+  clearReconnectTimer() {
+    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = null;
   }
 
   /** Rendered view: confirmed state with pending operations applied on top (optimistic). */
@@ -292,9 +390,11 @@ export class SyncClient {
     return { lastSeq: this.lastSeq, objects: canonicalState(this.confirmed) };
   }
 
+  /** Stops the client and removes every socket listener it registered (no duplicates on re-use). */
   close() {
     this.closed = true;
     this.clearGapTimer();
+    this.clearReconnectTimer();
     this.discardPending();
     for (const [event, handler] of Object.entries(this.handlers)) this.socket.off(event, handler);
   }
