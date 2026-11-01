@@ -1,0 +1,35 @@
+<!-- Owner: Prithvi | Reviewers: Rachit, Krishna | Status: v1.0 -->
+
+### 4.4 Accounts, boards, sharing and access
+
+Description: registered users own boards and share them through links that grant the Viewer or
+Editor role. Every action is checked against the permission matrix below on the server
+(SEC-REQ-003), for both request/response calls and real-time messages.
+
+**Permission matrix (FR-051)**
+
+| Action | Owner | Editor | Viewer |
+|---|---|---|---|
+| View board, participants, members list and version list; preview a version | Yes | Yes | Yes |
+| Draw, add shapes and text, edit, move, restyle, erase, delete objects | Yes | Yes | No |
+| Clear the entire board | Yes | No | No |
+| Restore a version | Yes | No | No |
+| Create, list and revoke share links | Yes | No | No |
+| Change member roles, remove members | Yes | No | No |
+| Transfer ownership, delete the board | Yes | No | No |
+
+| Req ID | Requirement (shall...) | Type | Priority | Source/Stakeholder | Acceptance criteria / Test case ref | Comments / Dependencies |
+|---|---|---|---|---|---|---|
+| FR-040 | The system shall let a visitor register an account with a unique e-mail address, a password that satisfies SEC-REQ-001 and a display name of 1–30 characters. | Functional | High | Team (D2) | AC-FR-040: Valid data creates an account; a duplicate e-mail address or invalid data is rejected with a message naming the problem. Test: TC-015 | SEC-REQ-001 |
+| FR-041 | The system shall let a registered user log in with e-mail address and password and log out. | Functional | High | Team (D2) | AC-FR-041: Correct credentials open the dashboard; wrong credentials are rejected with a message that does not reveal which field was wrong; after logout, the dashboard cannot be opened without logging in again. Test: TC-015 | SEC-REQ-002, SEC-REQ-006 |
+| FR-042 | The system shall let a logged-in registered user create a board with a title of 1–100 characters and shall make that user the board's Owner. | Functional | High | Team (D2) | AC-FR-042: The new board appears on the creator's dashboard with role "Owner" and an empty canvas. Test: TC-016 | Exactly one Owner per board |
+| FR-043 | The system shall show a logged-in registered user a dashboard listing every board they own or are a member of, with title, role and last-modified time. | Functional | Medium | Team | AC-FR-043: The dashboard lists exactly the boards where the user is Owner or member, with correct role. Test: TC-016 | — |
+| FR-044 | The system shall let only the Owner delete a board after confirmation; deletion shall remove the board's content, versions, members and share links, and disconnect all participants with a notice. | Functional | High | Team (D3) | AC-FR-044: After deletion the board is gone from all dashboards, its links no longer work, connected participants see a "board deleted" notice; a delete request from a non-Owner is rejected. Test: TC-016, TC-102 | FR-051 |
+| FR-045 | The system shall let the Owner create a share link for a board that grants either the Viewer or the Editor role and expires after a duration chosen from 1 hour, 24 hours or 7 days (default 7 days), and shall show the Owner the list of the board's active links with role and expiry time. | Functional | High | Team (D4) | AC-FR-045: A created link appears in the list with the chosen role and correct expiry time; the full link is displayed only once, at creation. Test: TC-017 | Values per D4a; SEC-REQ-004 |
+| FR-046 | The system shall admit a person who opens a valid share link to the board with the link's role: a logged-in registered user becomes a member with that role, unless they already have an equal or higher role; a person who is not logged in may enter a display name of 1–30 characters and join as a guest for the current browser session. | Functional | High | Team (D2, D4) | AC-FR-046: A registered user opening an Editor link appears in the members list as Editor; a guest joins with the entered name shown with "(guest)" and has the link's permissions only. Test: TC-017 | D4b, D4c |
+| FR-047 | The system shall let the Owner revoke a share link; after revocation the link shall no longer admit anyone, and guests admitted by that link shall be disconnected within 5 seconds with a notice. Registered members keep their membership until the Owner removes them. | Functional | High | Team (D4) | AC-FR-047: Opening a revoked link shows "link revoked"; a guest connected through it is disconnected within 5 s; registered members admitted through it still have access. Test: TC-103 | D4b; SEC-REQ-004 |
+| FR-048 | The system shall reject an expired share link with an "expired" message and shall disconnect guests admitted by that link within 5 seconds after it expires. | Functional | High | Team (D4) | AC-FR-048: A link opened after its expiry time is rejected; a guest connected through it is disconnected within 5 s of expiry. Test: TC-103 | D4a, D4b |
+| FR-049 | The system shall let the Owner change a member's role between Editor and Viewer or remove a member; the change shall apply to that member's next operation and to their open board view without a reload. | Functional | Medium | Team (D3) | AC-FR-049: After an Editor is changed to Viewer, their next edit is rejected and their tools are disabled; a removed member is disconnected and the board disappears from their dashboard. Test: TC-023 | FR-051 |
+| FR-050 | The system shall let the Owner transfer ownership of a board, after an explicit confirmation, to a registered user who is currently an Editor or Viewer member of that board; the new Owner shall gain all Owner permissions, the previous Owner shall become an Editor member, and both users' open board views shall reflect the new roles without a reload. | Functional | Medium | Team (D3) | AC-FR-050: After transfer, the new Owner can restore versions, manage links and members and delete the board, and the previous Owner can edit but can no longer do any of these; both dashboards show the new roles; a transfer requested by a non-Owner, without confirmation, to the Owner themself, to a guest or to a non-member is rejected and changes no role. Test: TC-018 | Guests cannot become Owner; API in SAD §4.3 (API-02) |
+| FR-051 | The system shall permit each action only to the roles marked "Yes" in the permission matrix of §4.4 and shall reject every other attempt without changing board data or notifying other participants of the attempted change. | Functional | High | Team (D3) | AC-FR-051: For every row of the matrix, an attempt by each role marked "No" is rejected and the board data is unchanged. Test: TC-101, TC-102 | SEC-REQ-003 |
+| FR-052 | The system shall show every participant a list of the participants currently connected to the board, with display name and role, and shall update it when a participant joins or leaves. | Functional | Medium | Team | AC-FR-052: When a participant joins or leaves, every other participant's list changes accordingly; guests are marked "(guest)". Test: TC-017 | No separate timing target in v1.0 |

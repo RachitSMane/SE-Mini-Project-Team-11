@@ -1,0 +1,82 @@
+@startuml sd-01-live-sync
+' Owner: Krishna | SAD 4.2 | SD-01 Live drawing synchronisation, acknowledgement and reconciliation
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 140
+skinparam ParticipantPadding 2
+skinparam BoxPadding 2
+skinparam defaultFontSize 12
+skinparam ParticipantBackgroundColor #F5F8FC
+skinparam ParticipantBorderColor #3B5B85
+skinparam ArrowFontSize 11
+hide footbox
+title SD-01 (part 1) — add a stroke: optimistic edit, validation, authorisation
+
+participant "Client A\n(Editor A)\nCOMP-01/02" as CA
+participant "Real-time\nServer\nCOMP-06" as RT
+participant "Board &\nAccess\nCOMP-05" as AC
+participant "Persist-\nence\nCOMP-08" as DB
+participant "Client B\n(Editor B)\nCOMP-01/02" as CB
+
+== Add a stroke (FR-001, FR-020, FR-027) ==
+note over CA : Editor A draws a stroke
+CA -> CA : pending += c1;\nview = confirmed + pending
+CA -> RT : op:submit {boardId, clientOpId:c1, type:"object:add",\n payload:{id:o1, kind:"stroke", ...}}
+RT -> RT : per-board queue; token still valid;\nrate limit; schema, size, board limit
+RT -> AC : authorize(A, boardId, "edit")
+AC --> RT : allowed (role from server data)
+newpage SD-01 (part 2) — add a stroke (continued): persist, acknowledge, broadcast
+
+RT -> DB : insert boardObject o1 (updatedSeq 41);\nboards.seq = 41  [journaled]
+DB --> RT : ok
+RT --> CA : ack {ok:true, clientOpId:c1, seq:41}
+CA -> CA : 41 = lastSeq+1: apply c1 to confirmed;\nlastSeq = 41; pending -= c1
+RT -> CB : op:applied {seq:41, clientOpId:c1, type:"object:add", payload}
+CB -> CB : 41 = lastSeq+1: apply; lastSeq = 41; render
+
+newpage SD-01 (part 3) — concurrent update of the same object
+
+== Concurrent update: server order decides (FR-021, FR-023) ==
+par
+  CA -> RT : op:submit {c2, "object:update", {id:o1, x:100, y:80}}
+else
+  CB -> RT : op:submit {c7, "object:update", {id:o1, color:"#D32F2F"}}
+end
+note over RT : Queue order: c2 -> seq 42, then c7 -> seq 43.\nEach is persisted before it is acknowledged or broadcast.
+RT --> CA : ack {ok:true, c2, seq:42}
+RT -> CB : op:applied {seq:42, update o1 x,y}
+RT --> CB : ack {ok:true, c7, seq:43}
+RT -> CA : op:applied {seq:43, update o1 color}
+note over CA, CB : Both clients apply seq 42 then 43: o1 at (100, 80) in #D32F2F\non every client. Same property changed twice: the higher seq wins\n(last write wins); different properties are both kept.
+
+newpage SD-01 (part 4) — gap repair
+
+== Gap detected and repaired (safeguard, SAD 4.1.3 rule 4) ==
+RT -> CB : op:applied {seq:45, ...}
+CB -> CB : 45 > lastSeq+1 (44 missing):\nbuffer seq 45; start 1 s gap timer
+opt gap not closed within 1 s
+  CB -> RT : board:join {boardId}
+  RT --> CB : ack {ok:true, state:{seq:45, objects}, participants}
+  CB -> CB : confirmed = state; lastSeq = 45;\nclear buffer; keep pending
+end
+
+newpage SD-01 (part 5) — rejected operation is rolled back
+
+== Rejected operation is rolled back (FR-008, FR-026) ==
+CB -> CB : pending += c8 (stroke shown optimistically)
+CB -> RT : op:submit {c8, "object:add", ...}
+RT -> RT : contentBytes would exceed 15 MiB
+RT --> CB : ack {ok:false, clientOpId:c8, error:{code:"BOARD_FULL"}}
+CB -> CB : pending -= c8; view recomputed\n(stroke disappears); show message
+note right of RT : Nothing stored, nothing broadcast. FORBIDDEN and\nVALIDATION_FAILED follow the same path; authorisation\nfailures are logged as security events (COMP-09).
+
+newpage SD-01 (part 6) — reconnection recovery
+
+== Connection lost and recovered (FR-025, NFR-004) ==
+CB -> CB : connection lost: show "disconnected",\ndisable tools; pending = [c9] (unacknowledged)
+CB -> RT : reconnect (backoff 500 ms ... max 2 s) with token
+RT -> RT : verify token
+CB -> RT : board:join {boardId}
+RT --> CB : ack {ok:true, state:{seq:52, objects}, participants}
+CB -> CB : confirmed = state; lastSeq = 52; clear buffer;\ndiscard pending c9; show "unconfirmed changes\nmay not have been saved"; enable tools;\nmark board-ready
+@enduml

@@ -1,0 +1,10 @@
+{
+  "name": "@wb/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./objects": "./src/objects.js",
+    "./sync": "./src/syncClient.js"
+  }
+}

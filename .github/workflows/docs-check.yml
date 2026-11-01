@@ -1,0 +1,26 @@
+name: docs-check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  traceability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check IDs and traceability
+        run: python tools/check_trace.py
+      - name: Size model (design calculation)
+        run: python tools/size_model.py
+      - name: Documentation tool tests (build tests skip without the local templates)
+        run: python -m unittest discover -s tools/tests -v
