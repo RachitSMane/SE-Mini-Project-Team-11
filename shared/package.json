@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./errors": "./src/errorCodes.js",
     "./objects": "./src/objects.js",
     "./sync": "./src/syncClient.js"
   }
