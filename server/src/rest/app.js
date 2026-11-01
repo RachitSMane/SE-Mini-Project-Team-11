@@ -137,6 +137,12 @@ export function createApp({ config, auth, access, versions }) {
     res.json(await access.getBoard(req.actor, req.params.boardId, req.ctx));
   });
 
+  // Rename (issue #13): Owner only; same title rule as creation.
+  api.patch('/boards/:boardId', authenticate(), async (req, res) => {
+    const { title } = validateBody('renameBoard', req.body);
+    res.json(await access.renameBoard(req.actor, req.params.boardId, title, req.ctx));
+  });
+
   api.delete('/boards/:boardId', authenticate(), async (req, res) => {
     await access.deleteBoard(req.actor, req.params.boardId, req.ctx);
     res.status(204).end();

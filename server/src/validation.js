@@ -134,6 +134,13 @@ const email = { type: 'string', minLength: 3, maxLength: 254, pattern: '^[^\\s@]
 const displayName = { type: 'string', minLength: 1, maxLength: LIMITS.MAX_DISPLAY_NAME, pattern: '\\S' };
 const password = { type: 'string', minLength: LIMITS.MIN_PASSWORD, maxLength: LIMITS.MAX_PASSWORD };
 
+const boardTitleBody = {
+  type: 'object',
+  properties: { title: { type: 'string', minLength: 1, maxLength: LIMITS.MAX_TITLE, pattern: '\\S' } },
+  required: ['title'],
+  additionalProperties: false,
+};
+
 const bodies = {
   register: {
     type: 'object',
@@ -147,12 +154,8 @@ const bodies = {
     required: ['email', 'password'],
     additionalProperties: false,
   },
-  createBoard: {
-    type: 'object',
-    properties: { title: { type: 'string', minLength: 1, maxLength: LIMITS.MAX_TITLE, pattern: '\\S' } },
-    required: ['title'],
-    additionalProperties: false,
-  },
+  createBoard: boardTitleBody,
+  renameBoard: boardTitleBody, // same 1–100 character rule as creation (FR-042)
   createLink: {
     type: 'object',
     properties: { role: { enum: ['viewer', 'editor'] }, expiresIn: { enum: ['1h', '24h', '7d'] } },

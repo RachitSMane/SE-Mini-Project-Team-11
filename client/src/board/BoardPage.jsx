@@ -13,6 +13,7 @@ import BoardCanvas from './Canvas.jsx';
 import Toolbar, { TOOLS } from './Toolbar.jsx';
 import SidePanel from './SidePanel.jsx';
 import { MembersDialog, ShareDialog } from './OwnerDialogs.jsx';
+import { downloadBoardPng } from './exportImage.js';
 
 const TEST_BUILD = import.meta.env.MODE === 'test';
 
@@ -158,6 +159,12 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
       }
       rerender();
     });
+    // The Owner renamed the board from the dashboard (issue #13): show the new title without a reload.
+    socket.on('board:renamed', (evt) => {
+      if (evt?.boardId === boardId && typeof evt.title === 'string') setTitle(evt.title);
+    });
+    socket.on('connect_error', (err) => {
+      if (err?.data?.code !== 'UNAUTHENTICATED') return; // network errors: keep retrying
     const onConnectError = (err) => {
       if (err?.data?.code !== 'UNAUTHENTICATED') return; // network errors: Socket.IO keeps retrying
       sync.close();
@@ -245,6 +252,24 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
   useEffect(() => {
     if (selectedId && !selected) setSelectedId(null); // deleted by someone else
   }, [selectedId, selected]);
+
+  // Export (issue #16): every role may download the board as it is shown, as a PNG image.
+  const [exporting, setExporting] = useState(false);
+  const exportBoard = async () => {
+    if (objects.length === 0) {
+      push('This board is empty: there is nothing to export.', 'warning');
+      return;
+    }
+    setExporting(true);
+    try {
+      const { fileName } = await downloadBoardPng(objects, title || 'board');
+      push(`Board exported as ${fileName}.`, 'info');
+    } catch (err) {
+      push(err?.code === 'EMPTY' ? err.message : `Export failed: ${err?.message || 'the image could not be created.'}`, err?.code === 'EMPTY' ? 'warning' : 'error');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const clearBoard = () =>
     setConfirm({
@@ -351,6 +376,18 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
         )}
         <span className="divider" />
         <div className="topbar-actions">
+          <button
+            type="button"
+            className="ghost"
+            onClick={exportBoard}
+            disabled={!ready || exporting}
+            data-testid="export-board"
+            aria-label="Export board as PNG image"
+            title="Download the board as a PNG image"
+          >
+            <Icon name="download" size={16} />
+            <span className="btn-label">Export PNG</span>
+          </button>
           <button type="button" className="ghost" onClick={() => setDialog('members')} disabled={!ready} title="See who has access to this board">
             <Icon name="users" size={16} />
             <span className="btn-label">Members</span>
