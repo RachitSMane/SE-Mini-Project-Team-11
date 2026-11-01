@@ -31,9 +31,10 @@ export class BoardEngine {
     const rt = await this.store.load(boardId);
     if (!rt) throw new AppError('BOARD_NOT_FOUND');
     if (rt.failed) throw new AppError('INTERNAL');
+    // Every type is validated, the clear included (its payload must be `{}`, API-01).
+    validateOperation(type, payload, rt.objects);
     if (type === 'board:clear') return this.clear(rt, actor, msg, ctx);
 
-    validateOperation(type, payload, rt.objects);
     // FR-008: content size (M3) after the change, checked before anything is written.
     let newSize = 0;
     let delta = 0;

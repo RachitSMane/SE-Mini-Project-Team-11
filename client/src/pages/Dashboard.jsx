@@ -2,7 +2,7 @@
 // (issue #13), delete.
 import { useCallback, useEffect, useState } from 'react';
 import { LIMITS } from '@wb/shared/objects';
-import { api } from '../api.js';
+import { api, describeError } from '../api.js';
 import { Icon, Logo } from '../icons.jsx';
 import { Link, navigate } from '../router.jsx';
 import { ConfirmDialog, ErrorText, formatTime, initials, Modal, ROLE_LABEL } from '../ui.jsx';
@@ -65,7 +65,7 @@ export default function Dashboard({ session, onLogout, onUnauthenticated }) {
   const handle = useCallback(
     (err) => {
       if (err.status === 401) onUnauthenticated();
-      else setError(err.message);
+      else setError(describeError(err));
     },
     [onUnauthenticated],
   );

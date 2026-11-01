@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import express from 'express';
 import mongoose from 'mongoose';
-import { AppError, errorBody } from '../errors.js';
+import { AppError, dbErrorDetails, errorBody, toAppError } from '../errors.js';
 import { logger, metrics } from '../logger.js';
 import { validateBody, validateIdempotencyKey } from '../validation.js';
 
@@ -229,13 +229,20 @@ export function createApp({ config, auth, access, versions }) {
     app.get(/^\/(?!api\/|socket\.io\/).*/, (req, res) => res.sendFile(path.join(config.clientDist, 'index.html')));
   }
 
+  // Central error handler (issue #9): every failure becomes the common error object
+  // { error: { code, message, requestId } }. Details of unexpected errors go to the log only.
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
-    let error = err;
+    let error;
     if (err?.type === 'entity.too.large') error = new AppError('VALIDATION_FAILED', 'The request body exceeds 64 KiB.');
     else if (err?.type === 'entity.parse.failed') error = new AppError('VALIDATION_FAILED', 'The request body is not valid JSON.');
-    else if (!(err instanceof AppError)) logger.error('http.internal_error', { requestId: req.requestId, error: err?.message, stack: err?.stack });
-    res.status(error instanceof AppError ? error.status : 500).json({ error: errorBody(error, req.requestId) });
+    else error = toAppError(err);
+    if (error.unexpected) {
+      logger.error('http.internal_error', { requestId: req.requestId, error: err?.message, stack: err?.stack });
+    } else if (error.cause) {
+      logger.warn('http.db_error', { requestId: req.requestId, errorCode: error.code, ...dbErrorDetails(error.cause) });
+    }
+    res.status(error.status).json({ error: errorBody(error, req.requestId) });
   });
 
   return app;
