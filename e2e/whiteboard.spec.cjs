@@ -33,7 +33,12 @@ test('TC-015/TC-016: register, create and open a board, log out', async ({ page 
   await expect(page.getByRole('heading', { name: 'My boards' })).toBeVisible();
 });
 
-test('TC-001 to TC-004: pen, shapes, text, select/move/restyle/delete and eraser synchronise', async ({ browser }) => {
+test('TC-001 to TC-004: pen, shapes, text, select/move/restyle/delete and eraser synchronise', async ({ browser, browserName }) => {
+  // Issue #25: Playwright's WebKit build for Windows renders in software, so every action is slower
+  // (measured 31-10-2026: ~30 ms per key in the text editor against ~2.5 ms in Chromium, ~450 ms per
+  // toolbar click against ~90 ms). Typing the 501 characters of the FR-004 check one by one then runs
+  // past the 60 s default. test.slow() triples the timeout for WebKit only; every assertion is unchanged.
+  test.slow(browserName === 'webkit', 'Playwright WebKit on Windows: slow per-key input (issue #25)');
   const O = await registerUser('Owner');
   const E = await registerUser('Editor');
   const boardId = await createBoard(O);

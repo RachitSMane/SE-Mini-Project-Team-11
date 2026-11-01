@@ -1,7 +1,7 @@
 // Owner dialogs: share links (FR-045, FR-047) and members with role change, removal and ownership
 // transfer (FR-049, FR-050). The server enforces every rule; these dialogs only call API-02.
 import { useCallback, useEffect, useState } from 'react';
-import { api } from '../api.js';
+import { api, describeError } from '../api.js';
 import { Icon } from '../icons.jsx';
 import { avatarTone, ConfirmDialog, ErrorText, formatTime, initials, Modal, ROLE_LABEL } from '../ui.jsx';
 
@@ -15,7 +15,7 @@ export function ShareDialog({ boardId, token, onClose }) {
   const [busy, setBusy] = useState(false);
   const [confirm, setConfirm] = useState(null);
   const load = useCallback(() => {
-    api('GET', `/boards/${boardId}/links`, { token }).then(setLinks, (e) => setError(e.message));
+    api('GET', `/boards/${boardId}/links`, { token }).then(setLinks, (e) => setError(describeError(e)));
   }, [boardId, token]);
   useEffect(load, [load]);
 
@@ -28,7 +28,7 @@ export function ShareDialog({ boardId, token, onClose }) {
       setCopied(false);
       load();
     } catch (err) {
-      setError(err.message);
+      setError(describeError(err));
     } finally {
       setBusy(false);
     }
@@ -42,7 +42,7 @@ export function ShareDialog({ boardId, token, onClose }) {
         try {
           await api('DELETE', `/boards/${boardId}/links/${l.linkId}`, { token });
         } catch (err) {
-          setError(err.message);
+          setError(describeError(err));
         }
         load();
       },
@@ -145,7 +145,7 @@ export function MembersDialog({ boardId, token, isOwner, onClose, onTransferred 
   const [error, setError] = useState(null);
   const [confirm, setConfirm] = useState(null);
   const load = useCallback(() => {
-    api('GET', `/boards/${boardId}/members`, { token }).then(setMembers, (e) => setError(e.message));
+    api('GET', `/boards/${boardId}/members`, { token }).then(setMembers, (e) => setError(describeError(e)));
   }, [boardId, token]);
   useEffect(load, [load]);
 
@@ -154,7 +154,7 @@ export function MembersDialog({ boardId, token, isOwner, onClose, onTransferred 
     try {
       await fn();
     } catch (err) {
-      setError(err.message);
+      setError(describeError(err));
     }
     load();
   };

@@ -2,17 +2,18 @@
 // for the pen, shape, line, text, select and eraser tools (FR-001 to FR-006).
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { LIMITS, translatedGeometry } from '@wb/shared/objects';
-import { addStrokePoint, hitTest, round1, shapeFromDrag, textFontSize, touchedBySegment } from './geometry.js';
+import { addStrokePoint, hitTest, newObjectId, round1, shapeFromDrag, textFontSize, touchedBySegment } from './geometry.js';
 import { canvasMeasure, drawScene, FONT_FAMILY } from './render.js';
 
-const newId = () => crypto.randomUUID();
+// Works over plain HTTP too (crypto.randomUUID needs HTTPS or localhost); see newObjectId.
+const newId = () => newObjectId();
 
 export default function BoardCanvas({ objects, tool, style, editable, selectedId, onSelect, onAdd, onUpdate, onDelete, emptyHint = null }) {
   const wrapRef = useRef(null);
   const canvasRef = useRef(null);
   const [size, setSize] = useState({ w: 800, h: 600 });
   const drag = useRef(null); // current gesture
-  const [, setFrame] = useState(0); // re-render while a gesture changes the draft
+  const [frame, setFrame] = useState(0); // re-render (and redraw) while a gesture changes the draft
   const [textEdit, setTextEdit] = useState(null); // {x, y, value, id?}
 
   // Fit the canvas to its container (device-pixel sharp).
@@ -28,7 +29,11 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
 
   const selected = selectedId ? objects.find((o) => o.id === selectedId) || null : null;
 
-  // Draw.
+  // Draw. Only when something visible changed: the objects, the canvas size, the selection, the tool,
+  // the object hidden by the text editor, or a gesture step (frame). Typing into the text editor
+  // re-renders this component on every key but does not change the canvas; without this list each
+  // key repainted the whole board, which made typing very slow in WebKit (issue #25: 501 keys took
+  // more than 60 s in Playwright's WebKit, against about 2 s in a plain text field).
   useEffect(() => {
     const canvas = canvasRef.current;
     const dpr = window.devicePixelRatio || 1;
@@ -48,7 +53,7 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
     if (g?.draft) extra.push(g.draft);
     if (textEdit?.id) hidden.add(textEdit.id);
     drawScene(ctx, size.w, size.h, objects, { hidden, extra, selected: tool === 'select' ? shownSelected : null, dim: g?.erased || new Set() });
-  });
+  }, [objects, size, selected, tool, textEdit?.id, frame]);
 
   const point = (e) => {
     const r = canvasRef.current.getBoundingClientRect();
@@ -151,6 +156,7 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
     if (!editable) {
       drag.current = null;
       setTextEdit(null);
+      setFrame((f) => f + 1); // redraw without the abandoned draft
     }
   }, [editable]);
 

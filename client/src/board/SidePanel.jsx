@@ -1,7 +1,7 @@
 // Right panel: participants (FR-052) and version history with read-only preview (FR-031, FR-032)
 // and Owner restore (FR-033).
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { api } from '../api.js';
+import { api, describeError } from '../api.js';
 import { avatarTone, ErrorText, formatTime, initials, Modal, ROLE_LABEL } from '../ui.jsx';
 import { Icon } from '../icons.jsx';
 import { bounds } from './geometry.js';
@@ -109,7 +109,7 @@ function History({ boardId, token, isOwner, versionTick, onRestore, onError }) {
         setError(null);
         setVersions(v);
       },
-      (err) => setError(err.message),
+      (err) => setError(describeError(err)),
     );
   }, [boardId, token]);
   useEffect(load, [load, versionTick]);

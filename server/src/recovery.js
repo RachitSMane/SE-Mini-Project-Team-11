@@ -1,6 +1,8 @@
 // Start-up recovery (SAD §3.6): runs for every board before the server accepts any connection.
-// 1. complete journalled clears/restores, 2. sequence recovery, 3. recompute content size (M3).
+// 1. complete journalled clears/restores, then the data integrity check (db/integrity.js),
+// 2. sequence recovery, 3. recompute content size (M3).
 import { Board, BoardObject, toSnapshot } from './db/models.js';
+import { checkIntegrity, problemCount } from './db/integrity.js';
 import { logger } from './logger.js';
 import { contentContribution } from './realtime/boardStore.js';
 import { withRetries } from './versions/versionService.js';
@@ -33,6 +35,16 @@ export async function runStartupRecovery({ engine, versions, faults }) {
     }
   } finally {
     faults.inRecovery = false;
+  }
+
+  // Integrity check (issue #20): remove orphans of deleted boards and leftover Owner membership rows
+  // before the per-board recovery below. It only removes documents no user can reach, so a failure is
+  // logged and does not stop the server from starting.
+  try {
+    const report = await checkIntegrity();
+    if (problemCount(report) > 0) logger.warn('integrity.repaired', { requestId: null, ...report });
+  } catch (err) {
+    logger.error('integrity.check_failed', { requestId: null, error: err.message });
   }
 
   // Steps 2 and 3 for every board.

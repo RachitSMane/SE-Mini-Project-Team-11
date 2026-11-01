@@ -2,7 +2,7 @@
 // connection authentication, per-connection rate limit, presence, access-change propagation.
 import crypto from 'node:crypto';
 import { LIMITS } from '@wb/shared/objects';
-import { AppError, errorBody } from '../errors.js';
+import { AppError, dbErrorDetails, errorBody, toAppError } from '../errors.js';
 import { logger, metrics } from '../logger.js';
 import { ACTIONS } from '../access/policy.js';
 import { validateEnvelope, validateJoin } from '../validation.js';
@@ -106,8 +106,10 @@ export class RealtimeServer {
       });
       if (result) logger.debug('board.joined', { requestId: ctx.requestId, boardId, actorId: socket.data.actor.id });
     } catch (err) {
-      if (!(err instanceof AppError)) logger.error('board.join_failed', { requestId: ctx.requestId, error: err.message });
-      ack({ ok: false, error: errorBody(err, ctx.requestId) });
+      const error = toAppError(err);
+      if (error.unexpected) logger.error('board.join_failed', { requestId: ctx.requestId, error: err?.message });
+      else if (error.cause) logger.warn('board.join_db_error', { requestId: ctx.requestId, errorCode: error.code, ...dbErrorDetails(error.cause) });
+      ack({ ok: false, error: errorBody(error, ctx.requestId) });
     }
   }
 
@@ -145,8 +147,10 @@ export class RealtimeServer {
         if (result.event) socket.to(room(msg.boardId)).emit('op:applied', result.event);
         metrics.observe(performance.now() - t0);
       });
-    } catch (err) {
-      if (!(err instanceof AppError)) logger.error('op.failed', { requestId: ctx.requestId, error: err.message });
+    } catch (thrown) {
+      const err = toAppError(thrown);
+      if (err.unexpected) logger.error('op.failed', { requestId: ctx.requestId, error: thrown?.message });
+      else if (err.cause) logger.warn('op.db_error', { requestId: ctx.requestId, errorCode: err.code, ...dbErrorDetails(err.cause) });
       if (err.code === 'UNAUTHENTICATED') {
         logger.security({ event: 'auth.token_rejected', requestId: ctx.requestId, socketId: socket.id, actor, boardId: msg.boardId, outcome: 'rejected', reason: 'UNAUTHENTICATED' });
       }

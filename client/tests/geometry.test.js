@@ -4,11 +4,14 @@ import {
   addStrokePoint,
   bounds,
   hitTest,
+  newObjectId,
   parseColor,
   parseStrokeWidth,
   shapeFromDrag,
   touchedBySegment,
 } from '../src/board/geometry.js';
+import { webcrypto } from 'node:crypto';
+import { validateOperation } from '../../server/src/validation.js';
 
 const style = { color: '#D32F2F', strokeWidth: 8 };
 
@@ -71,5 +74,36 @@ describe('selection and eraser', () => {
     const tb = bounds(t);
     expect(tb.x).toBe(200);
     expect(tb.w).toBeGreaterThan(0);
+  });
+});
+
+describe('object ids (issue #15)', () => {
+  const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+  const SERVER_ID = /^[A-Za-z0-9_-]{1,64}$/; // validation.js ID pattern
+  const insecure = { getRandomValues: (a) => webcrypto.getRandomValues(a) }; // plain HTTP: no randomUUID
+
+  test('uses crypto.randomUUID when the page is a secure context', () => {
+    expect(newObjectId({ randomUUID: () => 'from-randomUUID' })).toBe('from-randomUUID');
+    expect(newObjectId()).toMatch(UUID_V4); // Node's global crypto
+  });
+
+  test('over plain HTTP the fallback builds a valid, unique version-4 UUID from getRandomValues', () => {
+    const ids = new Set();
+    for (let i = 0; i < 1000; i += 1) {
+      const id = newObjectId(insecure);
+      expect(id).toMatch(UUID_V4);
+      expect(id).toMatch(SERVER_ID);
+      ids.add(id);
+    }
+    expect(ids.size).toBe(1000);
+    // Version and variant bits are forced whatever the random bytes are.
+    expect(newObjectId({ getRandomValues: (a) => a.fill(0xff) })).toBe('ffffffff-ffff-4fff-bfff-ffffffffffff');
+    expect(newObjectId({ getRandomValues: (a) => a.fill(0) })).toBe('00000000-0000-4000-8000-000000000000');
+    expect(newObjectId(undefined)).toMatch(UUID_V4); // no Web Crypto at all
+  });
+
+  test('objects drawn with a fallback id pass the server operation validation', () => {
+    const stroke = { id: newObjectId(insecure), kind: 'stroke', points: [[1, 2], [3, 4]], color: '#000000', strokeWidth: 3 };
+    expect(() => validateOperation('object:add', stroke, new Map())).not.toThrow();
   });
 });
