@@ -183,7 +183,7 @@ test('issue #16: an empty board is not exported; the user is told why', async ({
   expect(downloads).toBe(0);
 });
 
-test('issue #16: a Viewer guest can export; the button is disabled while disconnected', async ({ browser }) => {
+test('issue #16: a Viewer guest can export; the button is disabled while disconnected', async ({ browser }, testInfo) => {
   const O = await registerUser('Owner');
   const boardId = await createBoard(O, 'Shared view');
   const pO = await openAs(browser, O, `/boards/${boardId}`);
@@ -201,6 +201,13 @@ test('issue #16: a Viewer guest can export; the button is disabled while disconn
   const [download] = await Promise.all([pG.waitForEvent('download'), pG.getByTestId('export-board').click()]);
   expect(pngSize(fs.readFileSync(await download.path())).width).toBeGreaterThanOrEqual(150);
 
+  // Playwright's Firefox setOffline() rejects fetch but leaves the open WebSocket connected (measured
+  // 02-11-2026: still "Connected" 31 s after going offline), so no outage can be produced there; the same
+  // limitation as TC-009 in whiteboard.spec.cjs. The disconnected part runs in every other browser.
+  if (testInfo.project.name === 'firefox') {
+    testInfo.annotations.push({ type: 'limitation', description: 'offline emulation does not cut WebSockets in Playwright Firefox' });
+    return;
+  }
   await pG.context().setOffline(true);
   await expect(pG.getByTestId('disconnected-banner')).toBeVisible({ timeout: 25000 });
   await expect(pG.getByTestId('export-board')).toBeDisabled();
