@@ -14,6 +14,7 @@ import Toolbar, { TOOLS } from './Toolbar.jsx';
 import SidePanel from './SidePanel.jsx';
 import { MembersDialog, ShareDialog } from './OwnerDialogs.jsx';
 import { downloadBoardPng } from './exportImage.js';
+import { newObjectId } from './geometry.js';
 
 const TEST_BUILD = import.meta.env.MODE === 'test';
 
@@ -285,7 +286,9 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
       message: `The board content of every participant is replaced by version ${n}. This is saved as a new version; no version is deleted.`,
       confirmLabel: 'Restore',
       onConfirm: async () => {
-        const key = crypto.randomUUID(); // one key per user action (D14c); reused for a retry
+        // One key per user action (D14c), reused for a retry. newObjectId() also works over plain HTTP,
+        // where crypto.randomUUID() does not exist (it made restoring fail from another device on a LAN).
+        const key = newObjectId();
         const call = () => api('POST', `/boards/${boardId}/versions/${n}/restore`, { token, headers: { 'Idempotency-Key': key } });
         try {
           await call().catch((err) => (err.code === 'NETWORK' ? call() : Promise.reject(err)));

@@ -186,6 +186,9 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
         onPointerMove={onPointerMove}
         onPointerUp={onPointerEnd}
         onPointerCancel={onPointerEnd}
+        // If the browser drops the capture without an up or cancel event, end the gesture so later
+        // pointers are not ignored for good (after a normal up this finds no gesture and does nothing).
+        onLostPointerCapture={onPointerEnd}
         onDoubleClick={onDoubleClick}
       />
       {emptyHint && objects.length === 0 && !drag.current?.draft && !textEdit && (
