@@ -495,6 +495,8 @@ STP statuses (§5) are unchanged: TC-109 remains Blocked.
   `crypto.randomUUID()`, forced-colours swatches, lost pointer capture (#25); runtime dependencies
   `body-parser` 2.4.0, `fast-uri` 3.1.9, `qs` 6.17.1 (`npm audit --omit=dev`: 0 vulnerabilities).
 - New E2E specs: `responsive`, `validation`, `compat`, `smoke` (15 tests; 31 E2E tests in total).
+- After the merge of PR #33 (`2b68907`): GitHub CI on `main` passed (`app-ci` run 41476112779: 110 unit, 100
+  integration, 31 E2E; `docs-check`); report §10.
 - Results: see the report, §3–§4. Stable Mozilla Firefox 159.0 was run through Playwright's experimental BiDi
   driver (22 passed; 7 failures all traced to driver limitations). Not run: `npm run perf`; Apple Safari. Manual
   checks are listed in the report, §8.

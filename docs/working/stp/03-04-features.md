@@ -30,3 +30,11 @@ Features mapped to SRS requirement IDs and test cases (full mapping in §13):
 | Performance over the public Internet or with artificial network delay | Targets are defined for the local test environment (SRS §5, D7b). |
 | Long-term availability (uptime percentage) | No availability requirement in version 1.0. |
 | Formal penetration test by an external party and formal WCAG audit | Beyond course resources; replaced by the security test cases in §5.1 and the usability checklist in TC-021. |
+
+**Note (02-11-2026).** Two functions were implemented although they are outside the version 1.0
+requirement baseline: PNG export (issue #16; listed above as a candidate enhancement) and board rename
+(issue #13). They have no requirement ID, no test case in this plan and no RTM row; their scope
+decision is pending (SRS §2.7). They are nevertheless covered by automated tests outside this plan's
+test-case set: `client/tests/exportImage.test.js`, `server/tests/integration/boards.test.js` and
+`e2e/boards.spec.cjs` (and the release smoke test `e2e/smoke.spec.cjs`). If they are brought into scope,
+new test cases and RTM rows are added in the same change.

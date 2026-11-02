@@ -17,6 +17,7 @@ board's existence is not revealed); a requester with a role that is too low rece
 | `GET /boards` | registered user | — | `200 [{id, title, role, updatedAt}]` | 401 |
 | `POST /boards` | registered user | `{title}` | `201 {id, title, role: "owner"}` | 400, 401 |
 | `GET /boards/{boardId}` | Viewer | — | `200 {id, title, ownerId, role, updatedAt}` | 401, 403, 404 |
+| `PATCH /boards/{boardId}` (rename) | Owner | `{title}` — 1–100 characters, not blank, no other fields (same schema as `POST /boards`); stored trimmed | `200 {id, title, role, updatedAt}`; COMP-06 sends `board:renamed {boardId, title}` to the board's room | 400 `VALIDATION_FAILED`, 401, 403, 404 |
 | `DELETE /boards/{boardId}` | Owner | — | `204` | 401, 403, 404 |
 | `POST /boards/{boardId}/links` | Owner | `{role: "viewer" \| "editor", expiresIn: "1h" \| "24h" \| "7d"}` | `201 {linkId, url, role, expiresAt}` (`url` contains the token; shown once) | 400, 401, 403, 404 |
 | `GET /boards/{boardId}/links` | Owner | — | `200 [{linkId, role, expiresAt, createdAt}]` (no tokens) | 401, 403, 404 |
@@ -27,6 +28,13 @@ board's existence is not revealed); a requester with a role that is too low rece
 | `DELETE /boards/{boardId}/members/{userId}` | Owner | — | `204` | 401, 403, 404 |
 | `POST /boards/{boardId}/transfer-ownership` | Owner (session token) | `{newOwnerId, confirm: true}` | `200 {boardId, ownerId, previousOwner: {userId, role: "editor"}}` | 400 `VALIDATION_FAILED`/`INVALID_TARGET`, 401, 403, 404 (details below) |
 | `GET /health` | none | — | `200 {status: "ok", db: "up"}` | 503 if the database is down |
+
+**Board rename (added 02-11-2026, implemented in issue #13 / PR #28).** The endpoint runs in the board's
+queue and re-checks the requester's role there, so a rename cannot race with a deletion or an ownership
+transfer. The policy action `rename` is Owner-only (`server/src/access/policy.js`), like board deletion.
+Rename is not covered by an SRS requirement or by the FR-051 matrix (SRS §2.7, scope decision pending);
+it is logged as the operational event `board.renamed`, not as a security event. Tests:
+`server/tests/integration/boards.test.js`, `e2e/boards.spec.cjs`.
 
 **Example.**
 ```

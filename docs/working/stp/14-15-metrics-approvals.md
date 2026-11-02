@@ -24,6 +24,17 @@ listed in `docs/IMPLEMENTATION_STATUS.md` (all fixed and re-tested); test-reliab
 
 Regression run after the frontend redesign, 16-10-2026 (separate from the results above, which were obtained before it; automated only): the client's board view was restyled (layout, toolbar, side panel and dialog styling in `client/src`; no change to the server, the shared module, the APIs or the tests). On the same uncommitted working tree (base commit 82af885) afterwards: `npm run lint` clean; `npm run test:unit` 33/33 passed; `npm run test:integration` 53/53 passed; `npm run test:e2e` 10/10 passed in Playwright's Chromium; the same E2E suite with `E2E_BROWSERS=msedge,firefox` 19 passed and 1 skipped (TC-009 in Playwright's patched Firefox build, skipped by design) in Edge 155.0.4283.45 and Playwright's Firefox. Stable Firefox 157 and installed Chrome were not rerun, and no manual check was made, so TC-021 and the status of every test case are unchanged; TC-022 was not rerun under load.
 
+Final regression on `main` after PR #33, 02-11-2026 (automated, no status change; full record
+`docs/reports/RELEASE_READINESS_2026-11-02.md`, logs `docs/evidence/2026-11-02-final-validation/`): lint
+passed; 22 Jest suites, 210 unit and integration tests passed; production build passed with no test hooks;
+31 E2E tests passed in Chromium, installed Chrome and installed Edge, 28 passed and 3 skipped in Playwright's
+Firefox, 29 passed and 2 skipped in Playwright's WebKit (skips documented in the tests); traceability
+1,483 checks passed; GitHub CI (`app-ci`, `docs-check`) passed on PR #33 and on `main`. Defects found and
+fixed in this cycle: top-bar layout below 1024 px (#23), unreadable login/register/join errors (#21),
+restore without `crypto.randomUUID()`, forced-colours swatches and lost pointer capture (#25); runtime
+dependency advisories fixed (`npm audit --omit=dev`: 0). Requirement coverage is unchanged: 49 of 50 with
+RTM status P; TC-109 Blocked.
+
 ## 15. Approvals
 
 | Role | Name | Signature / Date |

@@ -52,6 +52,8 @@ Invalid token → `connect_error` with `data.code = "UNAUTHENTICATED"`. Maximum 
 | `presence:update` | `{boardId, participants: [{id, displayName, role, guest}]}` | On join, leave, disconnect, role change |
 | `role:changed` | `{boardId, role}` | When the Owner changes this member's role (FR-049), and to both users after an ownership transfer (FR-050); the client updates its enabled tools immediately |
 | `access:revoked` | `{boardId, reason}` with `reason` ∈ `LINK_REVOKED`, `LINK_EXPIRED`, `MEMBER_REMOVED`, `BOARD_DELETED` | Immediately before the server disconnects the socket (FR-044, FR-047–FR-049) |
+| `board:renamed` | `{boardId, title}` | After the Owner renames the board through `PATCH /boards/{boardId}` (API-02; added 02-11-2026, issue #13); the board page updates its title without a reload |
+| `notice` | `{boardId, code: "VERSION_NOT_SAVED", message}` | To the Owner's sockets when an automatic version could not be stored because its snapshot is too large (defensive check, §3.6). **Known gap (02-11-2026):** the client sync module does not subscribe to this event, so the notice is currently not shown |
 
 **Example.** Each line shows the direction and event name, followed by the complete JSON payload of that message.
 ```

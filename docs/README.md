@@ -9,10 +9,14 @@ for the Real-Time Collaborative Virtual Whiteboard:
 | Software Architecture and Design Specification (SAD) | `final/Team11_SAD.docx` | `working/sad/` |
 | Software Test Plan (STP) with test cases and RTM | `final/Team11_STP.docx` | `working/stp/` |
 
-**Status:** version 1.0, final for submission. The submission copies (DOCX and PDF) are in
-`submission/final/`. Team sign-off (the approval tables, Gate A) is still pending, and no test has
-been executed because the system is not implemented. `DECISIONS.md` lists every design decision
-with its rationale and the remaining external actions (E1–E5).
+**Status (updated 02-11-2026):** version 1.0. `submission/final/` holds the Part-1 submission copies of
+11-10-2026 (written before implementation; kept unchanged as the historical record). The documents were
+since updated with the implementation and test results; the current generated Word and PDF files are in
+`final/`, and the complete final-submission package (presentation, demo guide, documentation audit,
+checklist, screenshots) is in `final-submission/`. The system is implemented and tested: 33 of 34 test
+cases Pass, TC-109 Blocked (`IMPLEMENTATION_STATUS.md`, `reports/RELEASE_READINESS_2026-11-02.md`). Team
+sign-off (the approval tables, Gate A) is still pending. `DECISIONS.md` lists every design decision with
+its rationale and the remaining external actions (E1–E6).
 
 ## Layout
 
@@ -31,7 +35,10 @@ docs/
   diagrams/
     src/               PlantUML sources (.puml)
     png/               rendered diagrams used in the Word files
-  final/               generated Word documents (only the final-assembly branch commits these)
+  final/               generated Word documents and their PDF exports (only the final-assembly branch commits these)
+  final-submission/    final submission package: index, presentation, demo guide, audit, checklist, screenshots
+  reports/             release readiness reports (latest: RELEASE_READINESS_2026-11-02.md)
+  evidence/            command logs and screenshots behind every reported result
 tools/
   check_trace.py       ID and traceability checks (run before every push)
   render_diagrams.py   renders docs/diagrams/src/*.puml to PNG
@@ -114,8 +121,10 @@ only after CI passes and at least one teammate approves; everyone pulls `main` a
 
 ## CI and repository settings (current state)
 
-- `.github/workflows/docs-check.yml` runs `tools/check_trace.py` on pushes and Pull Requests. It
-  becomes active only after it is pushed to GitHub; it has **not** been run on GitHub yet.
-- Collaborators, branch protection for `main`, required reviews and required CI checks are
-  **not configured or verified** yet. The repository owner must set them in the GitHub settings.
+- `.github/workflows/docs-check.yml` (traceability) and `.github/workflows/app-ci.yml` (lint, unit,
+  integration, build, Chromium E2E) run on GitHub on every Pull Request and push to `main`; both pass on
+  `main` after PR #33 (verified 02-11-2026).
+- The four members are collaborators. Branch protection for `main`, required reviews and required CI
+  checks are **not** configured (verified 02-11-2026, DECISIONS.md E4); the repository owner can set them
+  in the GitHub settings.
 - Never commit passwords, tokens, API keys or `.env` files. Use placeholders such as `<token>` in documentation.

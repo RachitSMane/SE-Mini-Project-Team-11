@@ -171,3 +171,13 @@ errors or failed requests. Stable Mozilla Firefox 159 passed every automated tes
 run (22), with no application defect found in the 7 driver-limited ones. Not verified: Apple Safari (not
 tested at all), the three driver-limited stable-Firefox behaviours, real 125 % scaling, touch screens and
 high-contrast themes on physical setups, and TC-109 (no HTTPS deployment).
+
+## 10. Post-merge status (added 02-11-2026, 16:00 UTC)
+
+- PR #33 was merged into `main` as `2b68907`; its tree is identical to the validated commit `48051d8`.
+- GitHub CI on `main` at `2b68907`: `app-ci` run 41476112779 passed (lint, 110 unit, 100 integration,
+  production build, 31 Chromium E2E tests); `docs-check` passed.
+- Issues #21 and #23 were closed by PR #33. Issues #25 and #26 were closed as completed by the repository
+  owner at 15:54 UTC; **no results of the manual checks in §8 were recorded** in the issues or in the
+  repository, so §8 is unchanged. All four sprint milestones are closed.
+- Known limitations (§6) are unchanged.

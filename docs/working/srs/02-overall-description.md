@@ -78,3 +78,19 @@ actions outside the document and are tracked in `docs/DECISIONS.md` (E1–E5):
 - Measured verification of NFR-001 to NFR-005: done in the execution of 12-10-2026 (TC-009, TC-013, TC-019, TC-020 Pass; local hardware only, see STP Appendix A).
 - Verification of NFR-006 and NFR-007: done on 17-10-2026 (TC-021 Pass with limitations: manual in Firefox 158 and Chrome, automated in Chrome and Edge; limitations recorded in the STP TC-021 record).
 - A deployed HTTPS environment for verifying SEC-REQ-007 (TC-109).
+- **Scope decision pending (02-11-2026): functions implemented outside the version 1.0 requirement baseline.**
+  The requirements of this SRS are unchanged; the following functions were implemented during the
+  sprints (GitHub issues of the team's sprint plan) without a new SRS requirement, ID or RTM entry:
+  - *PNG export* (issue #16, PR #28): any participant can download the board as a PNG image. §1.2 and
+    §2.2 list "PNG/PDF export" as a candidate enhancement that "may be added only through a new,
+    approved requirement"; no such approval is recorded. The function is tested by automated tests
+    outside the STP test-case set (`client/tests/exportImage.test.js`, three E2E tests in
+    `e2e/boards.spec.cjs`).
+  - *Board rename* (issue #13, PR #28): the Owner can rename a board from the dashboard
+    (`PATCH /api/v1/boards/{boardId}`, SAD API-02). FR-042 to FR-044 cover create, list and delete only;
+    the FR-051 permission matrix has no rename row (implemented as Owner-only). Tested in
+    `server/tests/integration/boards.test.js` and `e2e/boards.spec.cjs`.
+  The team and the course mentor must decide either to bring these functions into version 1.0 (new
+  requirement IDs allocated in `docs/traceability/id-registry.md`, test cases and RTM rows) or to record
+  them as accepted additions outside the version 1.0 baseline. Until then they are not counted in the
+  requirement coverage.

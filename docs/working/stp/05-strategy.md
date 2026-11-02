@@ -18,7 +18,7 @@
 - Security testing: authorisation matrix, crafted messages, link lifecycle, token handling, input validation, rate limiting, log inspection (§5.1).
 - Compatibility, viewport and usability checklist testing (TC-021).
 - Boundary testing of limits (TC-001, TC-002, TC-015, TC-016, TC-022, TC-105, TC-107).
-- Regression testing: the automated unit and integration suites run in CI on every Pull Request (once CI is configured, DECISIONS.md D16) and locally before every push.
+- Regression testing: the automated unit and integration suites run in CI on every Pull Request (configured: `app-ci` — lint, unit, integration, build and Chromium E2E — and `docs-check` run on every Pull Request and push to `main` since 01-11-2026, DECISIONS.md D16) and locally before every push.
 
 **Test design techniques:** equivalence partitioning and boundary values for limits (stroke width
 1/20/0/21, text 500/501 characters, password 7/8/72/73 characters, 65,536-byte message size, 15,728,640-byte board content size); decision

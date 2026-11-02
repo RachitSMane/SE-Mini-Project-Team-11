@@ -18,7 +18,7 @@ All controls below were specified as design decisions (D13) before any of them w
 
 #### 3.9.3 Authorisation (same policy for REST and Socket.IO)
 
-- COMP-05 provides one function `authorize(actor, boardId, action)` implementing the FR-051 matrix. The role is always loaded from server data: `boards.ownerId`, `memberships`, or — for a guest — the `shareLinks` entry of the token's `linkId`, re-checked for expiry and revocation. A role or board ID inside a request payload is never trusted (SEC-REQ-003).
+- COMP-05 provides one function `authorize(actor, boardId, action)` implementing the FR-051 matrix. The role is always loaded from server data: `boards.ownerId`, `memberships`, or — for a guest — the `shareLinks` entry of the token's `linkId`, re-checked for expiry and revocation. A role or board ID inside a request payload is never trusted (SEC-REQ-003). Besides the FR-051 actions, the policy has an Owner-only `rename` action for the board-rename endpoint (issue #13; outside the SRS baseline, SRS §2.7).
 - Every REST route and every Socket.IO event handler calls `authorize` before reading or changing board data. A requester with no role on the board receives `BOARD_NOT_FOUND` (existence not revealed); a requester whose role is too low receives `FORBIDDEN`. Rejected attempts change nothing, are not broadcast and are logged as `authz.denied` (SEC-REQ-008).
 - Role changes, member removal, ownership transfer, link revocation or expiry and board deletion are pushed to COMP-06, which updates the cached role of affected sockets immediately and disconnects sockets that lost access within 5 seconds (FR-047 to FR-050, D3a).
 

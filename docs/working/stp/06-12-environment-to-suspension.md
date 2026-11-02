@@ -10,11 +10,21 @@ recorded in the test summary report with every performance result.
 Firefox and Microsoft Edge (versions recorded at test time), build of the system under test
 identified by Git commit hash.
 
+**Browser builds used for automated runs (added 02-11-2026).** `npm run test:e2e` uses Playwright's
+bundled Chromium (also in CI). `npm run test:e2e:browsers` uses the installed **stable Google Chrome**
+and **stable Microsoft Edge** (Playwright channels) and Playwright's own **Firefox** and **WebKit**
+builds. Playwright's Firefox is a patched build, **not** the stable Mozilla Firefox release that NFR-006
+names; Playwright's WebKit is the Safari engine, **not** Apple Safari. Evidence for the installed
+stable Mozilla Firefox comes from manual runs (TC-021, Firefox 158) and from Playwright's experimental
+WebDriver BiDi driver (Firefox 157 on 16-10-2026, Firefox 159 on 02-11-2026), which cannot automate
+every step (no `dblclick`, no download events, no network outage). Apple Safari is not a target browser
+of NFR-006 and has not been tested.
+
 **Tools (DECISIONS.md D15):** Jest (unit tests), Supertest (REST integration tests),
 socket.io-client scripted clients (Socket.IO integration, concurrency and latency harness),
 Playwright (browser end-to-end tests and load timing), browser developer tools (network
 throttling/offline simulation), MongoDB shell or Compass (database inspection), GitHub Issues
-(defect tracking), GitHub Actions (CI, once configured).
+(defect tracking), GitHub Actions (CI: `app-ci`, `docs-check`).
 
 **Implementation status of test assets:** the scripts, harnesses, seed data, fixtures, accounts and hooks named in this plan exist and were used in the execution of 12-10-2026 (Appendix A, `docs/IMPLEMENTATION_STATUS.md`). Historical v1.0 note: when this plan was written none of them existed; they were planned deliverables of the implementation phase and blockers for executing the corresponding test cases.
 
