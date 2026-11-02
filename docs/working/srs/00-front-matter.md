@@ -10,7 +10,7 @@
 
 **Date:** 11-10-2026
 
-**Status:** Final for submission — team sign-off pending (see Approvals); written before implementation (historical); implemented and tested in the execution of 12-10-2026 (uncommitted working tree on base commit 82af885): 47 of 50 requirements verified (RTM status P); NFR-006 and NFR-007 (TC-021) and SEC-REQ-007 (TC-109) not verified because those tests are Blocked; see `docs/IMPLEMENTATION_STATUS.md`. Update 17-10-2026: TC-021 is Pass with limitations (STP TC-021 record), so 49 of 50 requirements are verified (RTM status P); only SEC-REQ-007 is not verified (TC-109 Blocked).
+**Status:** Final for submission — team sign-off pending (see Approvals); written before implementation (historical); implemented and tested in the execution of 12-10-2026 (uncommitted working tree on base commit 82af885): 47 of 50 requirements verified (RTM status P); NFR-006 and NFR-007 (TC-021) and SEC-REQ-007 (TC-109) not verified because those tests are Blocked; see `docs/IMPLEMENTATION_STATUS.md`. Update 17-10-2026: TC-021 is Pass with limitations (STP TC-021 record), so 49 of 50 requirements are verified (RTM status P); only SEC-REQ-007 is not verified (TC-109 Blocked). Update 02-11-2026: final validation of `main` after PR #33 (`docs/reports/RELEASE_READINESS_2026-11-02.md`); RTM statuses unchanged; two implemented functions outside the requirement baseline (PNG export, board rename) are recorded in §2.7 pending a scope decision.
 
 ## Revision history
 

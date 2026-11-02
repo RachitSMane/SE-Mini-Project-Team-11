@@ -10,7 +10,7 @@
 
 **Date:** 11-10-2026
 
-**Status:** Final for submission — team sign-off pending (see §15). Execution 12-10-2026 (uncommitted working tree on base commit 82af885): 32 test cases Pass, 2 Blocked (TC-021: stable Firefox not installed at that time; TC-109: no deployment), none Fail; details in each test case and in `docs/IMPLEMENTATION_STATUS.md`. Before this execution no test had been run. TC-021 was executed manually on 17-10-2026 (installed Firefox 158 and Chrome by hand; Chrome and Edge automated) and set to **Pass** with limitations accepted by the team after a two-member review (TC-021 record), so 33 test cases are Pass and 1 Blocked (TC-109).
+**Status:** Final for submission — team sign-off pending (see §15). Execution 12-10-2026 (uncommitted working tree on base commit 82af885): 32 test cases Pass, 2 Blocked (TC-021: stable Firefox not installed at that time; TC-109: no deployment), none Fail; details in each test case and in `docs/IMPLEMENTATION_STATUS.md`. Before this execution no test had been run. TC-021 was executed manually on 17-10-2026 (installed Firefox 158 and Chrome by hand; Chrome and Edge automated) and set to **Pass** with limitations accepted by the team after a two-member review (TC-021 record), so 33 test cases are Pass and 1 Blocked (TC-109). Final regression 02-11-2026 on `main` after PR #33 (§14, `docs/reports/RELEASE_READINESS_2026-11-02.md`): no failure; statuses unchanged.
 
 ## Revision history
 

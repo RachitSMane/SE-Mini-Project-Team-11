@@ -10,7 +10,7 @@
 
 **Date:** 11-10-2026
 
-**Status:** Final for submission — written against SRS v1.0; team sign-off pending (see Approvals); written as a design before implementation (historical); implemented and tested in the execution of 12-10-2026 (uncommitted working tree on base commit 82af885; see `docs/IMPLEMENTATION_STATUS.md`)
+**Status:** Final for submission — written against SRS v1.0; team sign-off pending (see Approvals); written as a design before implementation (historical); implemented and tested in the execution of 12-10-2026 (uncommitted working tree on base commit 82af885; see `docs/IMPLEMENTATION_STATUS.md`); updated 02-11-2026 to the implementation on `main` after PR #33 (API-02 board rename, API-01 `board:renamed` and `notice`, §4.5–§4.6)
 
 ## Revision History
 

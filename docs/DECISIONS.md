@@ -29,7 +29,7 @@ Legend: RM = Rachit, KR = Krishna, PM = Pranav, PW = Prithvi.
 | D13 | Authentication mechanism | JWT session tokens (24 h) as bearer tokens; bcrypt password hashing | Stateless verification for REST and Socket.IO; standard, well-understood controls | Selected (v1.0); sign-off pending |
 | D14 | REST and Socket.IO contracts | API-01, API-02, API-03 (SAD §4.3) | Explicit contracts for implementation and testing | Selected (v1.0); sign-off pending |
 | D15 | Test tools | Jest, Supertest, socket.io-client harness, Playwright (STP §6) | Cover unit, API, real-time and browser levels for the chosen stack | Selected (v1.0); sign-off pending |
-| D16 | CI workflow | `.github/workflows/docs-check.yml` runs the traceability checker and the documentation tests | Automates the team rule "CI runs tests" for the documents | Selected (v1.0); the workflow file exists; enabling it on GitHub and branch protection are repository-owner actions (E4) |
+| D16 | CI workflow | `.github/workflows/docs-check.yml` runs the traceability checker and the documentation tests | Automates the team rule "CI runs tests" for the documents | Selected (v1.0); the workflow file exists; enabling it on GitHub and branch protection are repository-owner actions (E4). Update 02-11-2026: a second workflow, `.github/workflows/app-ci.yml` (lint, unit, integration, build, Chromium E2E), was added; both workflows run on GitHub on every Pull Request and push to `main` |
 
 ## Detailed design values
 
@@ -71,8 +71,9 @@ Legend: RM = Rachit, KR = Krishna, PM = Pranav, PW = Prithvi.
 | E1 | Sign the approval tables of SRS, SAD and STP v1.0 | Rachit, Krishna, Pranav, Prithvi | Pending |
 | E2 | Confirm the current submission deadline (the brief's ETA of 28-09-2026 has passed) | Team with the instructor | Pending |
 | E3 | Provide a deployed HTTPS environment so that TC-109 (SEC-REQ-007) can be executed | Team (implementation phase) | Pending |
-| E4 | Add collaborators, enable the CI workflow, protect `main` and require reviews and checks on GitHub | Repository owner | Pending (not verified) |
+| E4 | Add collaborators, enable the CI workflow, protect `main` and require reviews and checks on GitHub | Repository owner | Partly done (verified 02-11-2026): the four members are collaborators; `app-ci` and `docs-check` run on GitHub. **Open:** `main` is not protected and neither reviews nor checks are required (GitHub API: "Branch not protected"); PR #28 was merged with a failing check |
 | E5 | Implement the system and the planned test assets, then execute the STP | Team (implementation phase) | Implemented; STP executed 12-10-2026: 32 Pass, 2 Blocked (TC-021, TC-109), 0 Fail (`docs/IMPLEMENTATION_STATUS.md`). Addendum 17-10-2026: TC-021 executed manually and confirmed by the team as Pass with limitations (STP TC-021 record; `docs/evidence/2026-10-17-tc021-firefox/RESULTS.md`), so 33 Pass, 1 Blocked (TC-109), 0 Fail |
+| E6 | Decide the version scope of two implemented functions outside the SRS v1.0 baseline: PNG export (issue #16; SRS §1.2/§2.2 list export as a candidate enhancement) and board rename (issue #13); either approve them as new requirements (IDs, test cases, RTM rows) or record them as accepted additions outside the baseline (SRS §2.7) | Team with the course mentor | Pending (no approval recorded as of 02-11-2026) |
 
 ## Change history
 
