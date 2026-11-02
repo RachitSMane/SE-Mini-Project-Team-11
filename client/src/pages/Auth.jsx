@@ -1,7 +1,7 @@
 // Login and registration (FR-040, FR-041).
 import { useState } from 'react';
 import { LIMITS } from '@wb/shared/objects';
-import { api } from '../api.js';
+import { api, describeError } from '../api.js';
 import { Logo } from '../icons.jsx';
 import { Link } from '../router.jsx';
 import { ErrorText } from '../ui.jsx';
@@ -28,7 +28,9 @@ export function LoginPage({ onLogin }) {
     try {
       onLogin(await api('POST', '/auth/login', { body: { email, password } }));
     } catch (err) {
-      setError(err.message);
+      // Shared texts (issue #9): a wrong password keeps the server's generic message; a server that is
+      // down or unreachable gets a readable message instead of "Request failed (502)".
+      setError(describeError(err));
     } finally {
       setBusy(false);
     }
@@ -75,7 +77,7 @@ export function RegisterPage({ onLogin }) {
       await api('POST', '/auth/register', { body: { ...form, displayName: form.displayName.trim() } });
       onLogin(await api('POST', '/auth/login', { body: { email: form.email, password: form.password } }));
     } catch (err) {
-      setError(err.code === 'EMAIL_TAKEN' ? 'An account with this e-mail address already exists.' : err.message);
+      setError(describeError(err));
     } finally {
       setBusy(false);
     }

@@ -1,0 +1,28 @@
+Stable Mozilla Firefox 159.0 through Playwright 1.50.1's experimental WebDriver BiDi driver (_bidiFirefox),
+02-11-2026, commit 9660c24. Diagnosis of the 7 failures in 21-stable-firefox-159-bidi.txt.
+Diagnostic specs were run from a temporary folder outside the repository.
+
+Measured:
+  H1 page.url()=http://127.0.0.1:64362/ | location.href=http://127.0.0.1:64362/boards/6ae8af105c8b53ea07bea36f
+     -> the driver does not track history.pushState navigation; tests reading the board id from page.url() get undefined.
+  H2 input events during fill('21'): ["2","21"]
+     -> fill() types character by character; the valid intermediate width 2 is applied (as for a person typing),
+        the invalid 21 never is.
+  H3 dblclick events received: 0
+     -> the driver does not deliver dblclick, so double-click text editing cannot be automated.
+  Export (diagnostic): toast "Board exported as ff-export-2026-11-02.png."; no download event reaches Playwright.
+  Export, clear and restore: completed with no console errors or page errors.
+
+Classification of the 7 failures (all driver limitations, no application defect found):
+  boards #13 rename ............ H1 (page.url() stale)
+  boards #16 export (x2) ....... download events not delivered; app reported a successful export
+  smoke ........................ download event (all steps before export passed: register, create, draw,
+                                 share, guest join, live sync both ways)
+  validation stroke width ...... H2 (per-character fill; behaviour correct)
+  whiteboard TC-001 to TC-004 .. H3 (no dblclick)
+  whiteboard TC-009 ............ setOffline() does not cut the WebSocket
+Passed in stable Firefox 159: 22 tests, including TC-015/016, TC-017/103, TC-107/010, TC-005/013/023/018,
+TC-017 step 3, guest-token expiry, TC-009 repetition, TC-021 usability, all #23 responsive tests, 5 of 6 #21
+validation tests, restore without randomUUID, DPR 1.25, lost pointer capture.
+Not verified automatically in stable Firefox: double-click text editing, the offline banner, the actual
+PNG download (manual checks in the release report, section 8).

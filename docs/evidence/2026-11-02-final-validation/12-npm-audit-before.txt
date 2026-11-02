@@ -1,0 +1,157 @@
+# npm audit report
+
+body-parser  2.0.0 - 2.3.0
+Severity: high
+body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body - https://github.com/advisories/GHSA-27r3-jxmh-p828
+fix available via `npm audit fix`
+node_modules/body-parser
+
+deepmerge  >=4.2.0
+deepmerge mergeObject() allows prototype poisoning of returned objects - https://github.com/advisories/GHSA-gcqx-w48m-w2h4
+fix available via `npm audit fix --force`
+Will install jest@25.1.0, which is a breaking change
+node_modules/deepmerge
+  jest-config  >=25.2.0-alpha.86
+  Depends on vulnerable versions of babel-jest
+  Depends on vulnerable versions of deepmerge
+  Depends on vulnerable versions of glob
+  Depends on vulnerable versions of jest-circus
+  Depends on vulnerable versions of jest-runner
+  node_modules/jest-config
+    @jest/core  >=25.2.0-alpha.86
+    Depends on vulnerable versions of @jest/reporters
+    Depends on vulnerable versions of @jest/transform
+    Depends on vulnerable versions of jest-config
+    Depends on vulnerable versions of jest-resolve-dependencies
+    Depends on vulnerable versions of jest-runner
+    Depends on vulnerable versions of jest-runtime
+    Depends on vulnerable versions of jest-snapshot
+    node_modules/@jest/core
+      jest  >=25.2.0-alpha.86
+      Depends on vulnerable versions of @jest/core
+      Depends on vulnerable versions of jest-cli
+      node_modules/jest
+      jest-cli  >=25.2.0-alpha.86
+      Depends on vulnerable versions of @jest/core
+      Depends on vulnerable versions of jest-config
+      node_modules/jest-cli
+
+fast-uri  3.0.0 - 3.1.8
+Severity: moderate
+fast-uri vulnerable to URI scheme spoofing via percent-encoded scheme decoding - https://github.com/advisories/GHSA-w74x-v6f9-j3xg
+fast-uri vulnerable to improper path equivalence in relative reference normalization - https://github.com/advisories/GHSA-xhq7-xmqj-769h
+fast-uri vulnerable to host confusion via unchecked WHATWG host canonicalization - https://github.com/advisories/GHSA-wjr9-j795-jxcr
+fast-uri vulnerable to scheme injection via an unescaped first-segment colon in suffix references - https://github.com/advisories/GHSA-333x-w4r6-6crp
+fix available via `npm audit fix`
+node_modules/fast-uri
+
+glob  3.0.0 - 14.0.1
+Severity: moderate
+Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal - https://github.com/advisories/GHSA-3g3m-2fjr-6pw4
+Depends on vulnerable versions of minimatch
+fix available via `npm audit fix --force`
+Will install jest@25.1.0, which is a breaking change
+node_modules/glob
+node_modules/test-exclude/node_modules/glob
+  @jest/reporters  >=30.0.0-alpha.1
+  Depends on vulnerable versions of @jest/transform
+  Depends on vulnerable versions of glob
+  node_modules/@jest/reporters
+  jest-runtime  >=30.0.0-alpha.1
+  Depends on vulnerable versions of @jest/globals
+  Depends on vulnerable versions of @jest/transform
+  Depends on vulnerable versions of glob
+  Depends on vulnerable versions of jest-snapshot
+  node_modules/jest-runtime
+    jest-circus  >=30.0.0-alpha.1
+    Depends on vulnerable versions of @jest/expect
+    Depends on vulnerable versions of jest-runtime
+    Depends on vulnerable versions of jest-snapshot
+    node_modules/jest-circus
+    jest-runner  >=30.0.0-alpha.1
+    Depends on vulnerable versions of @jest/transform
+    Depends on vulnerable versions of jest-runtime
+    node_modules/jest-runner
+  test-exclude  4.2.2 || >=5.0.0
+  Depends on vulnerable versions of glob
+  Depends on vulnerable versions of minimatch
+  node_modules/test-exclude
+    babel-plugin-istanbul  >=8.0.0
+    Depends on vulnerable versions of test-exclude
+    node_modules/babel-plugin-istanbul
+      @jest/transform  >=30.5.0
+      Depends on vulnerable versions of babel-plugin-istanbul
+      node_modules/@jest/transform
+        babel-jest  >=30.5.0
+        Depends on vulnerable versions of @jest/transform
+        Depends on vulnerable versions of babel-plugin-istanbul
+        node_modules/babel-jest
+        jest-snapshot  >=30.5.0
+        Depends on vulnerable versions of @jest/transform
+        node_modules/jest-snapshot
+          @jest/expect  >=30.5.0
+          Depends on vulnerable versions of jest-snapshot
+          node_modules/@jest/expect
+            @jest/globals  >=30.5.0
+            Depends on vulnerable versions of @jest/expect
+            node_modules/@jest/globals
+          jest-resolve-dependencies  >=30.5.0
+          Depends on vulnerable versions of jest-snapshot
+          node_modules/jest-resolve-dependencies
+
+minimatch  <11.0.1
+Severity: moderate
+minimatch has potential denial of service via globparts amplification - https://github.com/advisories/GHSA-g3hv-75wg-m249
+fix available via `npm audit fix --force`
+Will install eslint-plugin-react@7.22.0, which is a breaking change
+node_modules/glob/node_modules/minimatch
+node_modules/minimatch
+node_modules/test-exclude/node_modules/glob/node_modules/minimatch
+node_modules/test-exclude/node_modules/minimatch
+  @eslint/config-array  *
+  Depends on vulnerable versions of minimatch
+  node_modules/@eslint/config-array
+    eslint  0.7.1 - 2.0.0-rc.1 || >=4.1.0
+    Depends on vulnerable versions of @eslint-community/eslint-utils
+    Depends on vulnerable versions of @eslint/config-array
+    Depends on vulnerable versions of @eslint/eslintrc
+    Depends on vulnerable versions of minimatch
+    node_modules/eslint
+      @eslint-community/eslint-utils  *
+      Depends on vulnerable versions of eslint
+      node_modules/@eslint-community/eslint-utils
+  @eslint/eslintrc  0.0.1 || >=0.1.1
+  Depends on vulnerable versions of minimatch
+  node_modules/@eslint/eslintrc
+  eslint-plugin-react  >=7.23.0
+  Depends on vulnerable versions of minimatch
+  node_modules/eslint-plugin-react
+
+playwright  <1.55.1
+Severity: high
+Playwright downloads and installs browsers without verifying the authenticity of the SSL certificate - https://github.com/advisories/GHSA-7mvr-c777-76hp
+fix available via `npm audit fix`
+node_modules/playwright
+  @playwright/test  0.9.7 - 0.1112.0-alpha2 || 1.38.0-alpha-1692262648000 - 1.55.1-beta-1758616458000
+  Depends on vulnerable versions of playwright
+  node_modules/@playwright/test
+
+qs  6.7.0 - 6.16.0
+Severity: moderate
+qs : qs.stringify with arrayFormat 'comma' throws an uncaught TypeError on array elements carrying a non-callable own toString (DoS) - https://github.com/advisories/GHSA-6pq8-jhm2-2vcw
+fix available via `npm audit fix`
+node_modules/qs
+
+vite  6.4.4
+Severity: moderate
+Vite: `server.fs.deny` bypassed with queries - https://github.com/advisories/GHSA-8g5g-mxqh-grgj
+fix available via `npm audit fix`
+node_modules/vite
+
+30 vulnerabilities (3 low, 24 moderate, 3 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force

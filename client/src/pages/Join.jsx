@@ -2,7 +2,7 @@
 // (never sent to servers in requests for the page) and removed from the address bar at once.
 import { useEffect, useRef, useState } from 'react';
 import { LIMITS } from '@wb/shared/objects';
-import { api } from '../api.js';
+import { api, describeError } from '../api.js';
 import { navigate } from '../router.jsx';
 import { loadPendingJoin, saveGuest, savePendingJoin } from '../session.js';
 import { ErrorText } from '../ui.jsx';
@@ -27,7 +27,7 @@ export default function JoinPage({ session, hash }) {
     if (hash || expired) window.history.replaceState(null, '', '/join');
   }, [hash, expired]);
 
-  const fail = (err) => setError(LINK_MESSAGES[err.code] || err.message);
+  const fail = (err) => setError(LINK_MESSAGES[err.code] || describeError(err));
 
   // A logged-in user becomes a member (or keeps a higher role) and opens the board.
   useEffect(() => {
