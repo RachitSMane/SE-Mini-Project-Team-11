@@ -55,6 +55,7 @@ Each fix has a test that fails on the previous code (checked by running it again
 | E2E, Chromium | `npm run test:e2e` | 0 | **31 passed** | `18-after-deps-e2e-chromium.txt` |
 | E2E, four browsers | `npm run test:e2e:browsers` | 0 | **119 passed**, 0 failed, 5 skipped | `19-after-deps-e2e-browsers.txt` |
 | Traceability | `python tools/check_trace.py` | 0 | 1,483 checks passed | `20-after-deps-check-trace.txt` |
+| E2E, stable Firefox 159.0 (BiDi, experimental) | temporary config, `_bidiFirefox` | 1 | 22 passed, 7 failed (driver limitations), 2 skipped — §4 | `21-…`, `22-stable-firefox-diagnosis.txt` |
 
 ## 4. Browser coverage
 
@@ -88,8 +89,15 @@ the #16 test runs its export part but not its outage step (same reason as TC-009
 
 - **Apple Safari was not tested.** Playwright's WebKit build is the Safari engine but not Safari (no macOS
   integration, different network stack). WebKit results are engine evidence only.
-- **Stable Mozilla Firefox was not tested in this session.** Playwright's Firefox is a patched build. The last
-  stable-Firefox evidence is the manual TC-021 run in Firefox 158 on 17-10-2026, which predates these changes.
+- **Stable Mozilla Firefox 159.0: automated, supplementary, partly limited by the driver.** Playwright's
+  Firefox above is a patched build. Stable Firefox 159.0 (extracted from the official installer, not installed)
+  was driven through Playwright 1.50.1's experimental WebDriver BiDi driver: **22 passed, 7 failed, 2 skipped**
+  (`21-stable-firefox-159-bidi.txt`). Each failure was traced to the driver (`22-stable-firefox-diagnosis.txt`):
+  it does not deliver download events (3 tests; the app reported a successful export), does not track
+  `history.pushState` in `page.url()` (1), types `fill()` one character at a time (1; the app behaves correctly),
+  does not deliver `dblclick` (1) and `setOffline()` leaves the WebSocket open (1). No application defect was
+  found. Not verified automatically in stable Firefox: double-click text editing, the offline banner and the
+  actual PNG download — they are manual checks (§8).
 - Forced-colours and multi-touch tests run in Chromium-based browsers only (emulation and CDP touch input are
   not available in the Firefox and WebKit drivers).
 
@@ -117,7 +125,8 @@ the #16 test runs its export part but not its outage step (same reason as TC-009
    from a second physical device on a LAN.
 3. **High-contrast swatches (G8):** fixed; verified with Chromium's forced-colours emulation. Not checked with the
    real Windows high-contrast theme.
-4. **Fractional DPR and multi-pointer:** DPR 1.25 tested (backing store and pointer accuracy) in every browser;
+4. **Fractional DPR and multi-pointer:** DPR 1.25 tested (backing store and pointer accuracy) in every browser,
+   including stable Firefox 159;
    two-finger touch tested in Chromium-based browsers through CDP touch input; lost pointer capture fixed and
    tested. Not checked at real 125 % Windows scaling or on a physical touch screen.
 5. **Firefox offline emulation:** outage tests (TC-009, #16 disconnected step) cannot run in Playwright's Firefox.
@@ -144,7 +153,8 @@ before deploying.
 
 ## 8. Manual checks before the demonstration
 
-- [ ] Stable Mozilla Firefox: register, create a board, draw, share, guest join, restore, export.
+- [ ] Stable Mozilla Firefox (installed): double-click a text object to edit it; export and open the PNG; go
+      offline and check the banner and disabled tools (the parts the BiDi driver cannot automate).
 - [ ] Apple Safari on a Mac, if one is available; otherwise state "Safari not tested" in the demo notes.
 - [ ] Windows display scaling 125 % and, if available, a touch screen: draw with pen and two fingers.
 - [ ] Windows high-contrast theme: colour swatches distinguishable.
@@ -157,5 +167,7 @@ before deploying.
 every automated check passes: lint; 210 unit and integration tests; the production build; 31 E2E tests in
 Chromium, Chrome and Edge, and in Playwright's Firefox and WebKit builds with 5 documented skips; traceability
 (1,483 checks); doc tools; the size model; and GitHub CI on the PR. The complete workflow produces no console
-errors or failed requests. Not verified: stable Mozilla Firefox and Apple Safari (manual checks required),
-real 125 % scaling, touch screens and high-contrast themes on physical setups, and TC-109 (no HTTPS deployment).
+errors or failed requests. Stable Mozilla Firefox 159 passed every automated test its experimental driver can
+run (22), with no application defect found in the 7 driver-limited ones. Not verified: Apple Safari (not
+tested at all), the three driver-limited stable-Firefox behaviours, real 125 % scaling, touch screens and
+high-contrast themes on physical setups, and TC-109 (no HTTPS deployment).
