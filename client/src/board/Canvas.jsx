@@ -37,8 +37,12 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
   useEffect(() => {
     const canvas = canvasRef.current;
     const dpr = window.devicePixelRatio || 1;
-    if (canvas.width !== size.w * dpr) canvas.width = size.w * dpr;
-    if (canvas.height !== size.h * dpr) canvas.height = size.h * dpr;
+    // canvas.width/height are integers: round, or a fractional ratio (e.g. 125 % display scaling)
+    // never compares equal and the backing store is reallocated on every redraw.
+    const bw = Math.round(size.w * dpr);
+    const bh = Math.round(size.h * dpr);
+    if (canvas.width !== bw) canvas.width = bw;
+    if (canvas.height !== bh) canvas.height = bh;
     const ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const g = drag.current;
@@ -75,31 +79,36 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
     }
   };
 
+  // One gesture at a time, owned by the pointer that started it: a second finger or a resting palm
+  // on a touch screen neither replaces the gesture in progress nor feeds points into it.
+  const otherPointer = (e) => drag.current !== null && drag.current.pointerId !== e.pointerId;
+
   const onPointerDown = (e) => {
-    if (!editable || e.button !== 0 || textEdit) return;
+    if (!editable || e.button !== 0 || textEdit || otherPointer(e)) return;
     const p = point(e);
-    canvasRef.current.setPointerCapture(e.pointerId);
+    const pointerId = e.pointerId;
+    canvasRef.current.setPointerCapture(pointerId);
     switch (tool) {
       case 'pen': {
         const points = [];
         addStrokePoint(points, p.x, p.y);
-        drag.current = { type: 'pen', draft: { id: newId(), kind: 'stroke', points, color: style.color, strokeWidth: style.strokeWidth } };
+        drag.current = { type: 'pen', pointerId, draft: { id: newId(), kind: 'stroke', points, color: style.color, strokeWidth: style.strokeWidth } };
         break;
       }
       case 'rect':
       case 'ellipse':
       case 'line':
-        drag.current = { type: 'shape', start: p, draft: shapeFromDrag(tool, p, p, style, newId()) };
+        drag.current = { type: 'shape', pointerId, start: p, draft: shapeFromDrag(tool, p, p, style, newId()) };
         break;
       case 'eraser': {
         const erased = new Set(touchedBySegment(objects, p.x, p.y, p.x, p.y, 8, measure()));
-        drag.current = { type: 'eraser', last: p, erased };
+        drag.current = { type: 'eraser', pointerId, last: p, erased };
         break;
       }
       case 'select': {
         const hit = hitTest(objects, p.x, p.y, 6, measure());
         onSelect(hit ? hit.id : null);
-        if (hit) drag.current = { type: 'move', start: p, dx: 0, dy: 0, moved: false };
+        if (hit) drag.current = { type: 'move', pointerId, start: p, dx: 0, dy: 0, moved: false };
         break;
       }
       case 'text':
@@ -113,7 +122,7 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
 
   const onPointerMove = (e) => {
     const g = drag.current;
-    if (!g) return;
+    if (!g || otherPointer(e)) return;
     const p = point(e);
     if (g.type === 'pen') {
       if (!addStrokePoint(g.draft.points, p.x, p.y)) finishGesture(); // 2,000-point limit reached
@@ -144,6 +153,10 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
     setFrame((f) => f + 1);
   }
 
+  const onPointerEnd = (e) => {
+    if (!otherPointer(e)) finishGesture();
+  };
+
   const onDoubleClick = (e) => {
     if (!editable || tool !== 'select') return;
     const p = point(e);
@@ -171,8 +184,8 @@ export default function BoardCanvas({ objects, tool, style, editable, selectedId
         aria-label="Whiteboard canvas"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
-        onPointerUp={finishGesture}
-        onPointerCancel={finishGesture}
+        onPointerUp={onPointerEnd}
+        onPointerCancel={onPointerEnd}
         onDoubleClick={onDoubleClick}
       />
       {emptyHint && objects.length === 0 && !drag.current?.draft && !textEdit && (
