@@ -1,5 +1,8 @@
 # Release readiness report — 31-10-2026 (issue #26)
 
+> Superseded by [`RELEASE_READINESS_2026-11-02.md`](RELEASE_READINESS_2026-11-02.md), which validates `main`
+> after PRs #29–#32 and the fixes for #21, #23 and #25. This report is kept as the record of 31-10-2026.
+
 Prepared by Pranav (issues #10, #13, #16, #19, #26) for Rachit (repository owner).
 Every result below comes from a command that was run, with exit code and log checked. Logs and
 screenshots are in `docs/evidence/2026-10-31-1930-pranav-issues-settled/`.

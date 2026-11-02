@@ -1,6 +1,6 @@
 # Implementation Status
 
-Last updated 12-10-2026 (evening); later sessions are appended as §10–§12 (latest 15-10-2026, §12). Every result below is tied to a command whose exit code and output
+Last updated 12-10-2026 (evening); later sessions are appended as §10–§16 (latest 02-11-2026, §16). Every result below is tied to a command whose exit code and output
 were checked, and to an evidence file where one exists. Nothing is claimed from code inspection alone.
 Two verification sessions ran on 12-10-2026 on the same uncommitted working tree:
 
@@ -484,6 +484,19 @@ Windows 11, MongoDB 8.2 (throw-away `mongod` through `MONGOD_BIN`). Evidence:
 | `npm run dev` smoke | 24.22.2 | `/api/v1/health` 200 through the Vite proxy; Socket.IO handshake through the proxy refused with `UNAUTHENTICATED` without a token; client page 200 | not retained (manual) |
 
 Not run in this session: `npm run perf`, `npm run test:e2e:browsers`, manual multi-browser testing.
+
+## 16. Session 16 (02-11-2026): issues #21, #23, #25, #26 — final validation
+
+Branch `feature/issues-21-23-25-26` (PR #33) on `main` `7f3126d`. Full record:
+`docs/reports/RELEASE_READINESS_2026-11-02.md`; logs in `docs/evidence/2026-11-02-final-validation/`.
+STP statuses (§5) are unchanged: TC-109 remains Blocked.
+
+- Fixes: top-bar layout below 1024 px (#23); readable login/register/join errors (#21); restore without
+  `crypto.randomUUID()`, forced-colours swatches, lost pointer capture (#25); runtime dependencies
+  `body-parser` 2.4.0, `fast-uri` 3.1.9, `qs` 6.17.1 (`npm audit --omit=dev`: 0 vulnerabilities).
+- New E2E specs: `responsive`, `validation`, `compat`, `smoke` (15 tests; 31 E2E tests in total).
+- Results: see the report, §3–§4. Not run: `npm run perf`; stable Mozilla Firefox and Apple Safari (manual
+  checks listed in the report, §8).
 
 ## Run locally
 

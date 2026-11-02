@@ -1,0 +1,21 @@
+$ python tools/size_model.py
+# commit d0b4937, 2026-11-02T14:36:02Z, node v26.7.0
+Size model (design calculation, not an application measurement)
+  generator_points_per_stroke  1,951
+  generator_objects            248
+  largest_message_m1           30,435
+  message_limit                65,536
+  m2_first_stroke              63,389
+  m3_filled                    15,722,704
+  content_limit                15,728,640
+  m4_worst_case_metadata       15,721,888
+  m4_minus_m3                  -816
+  overhead_empty_version       286
+  metadata_bound               286
+  defensive_limit              16,711,680
+  mongo_limit                  16,777,216
+  margin_to_defensive          989,792
+  tb_std_objects               370
+  tb_std_m3                    1,939,060
+  bound_holds                  True
+# exit 0

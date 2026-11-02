@@ -1,0 +1,15 @@
+$ npm test
+# after dependency update (body-parser 2.4.0, fast-uri 3.1.9, qs 6.17.1); HEAD 12d7e34 + lockfile change; 2026-11-02T15:17:59Z, node v26.7.0
+
+> test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand
+
+(node:28280) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Test Suites: 22 passed, 22 total
+Tests:       210 passed, 210 total
+Snapshots:   0 total
+Time:        211.023 s, estimated 313 s
+Ran all test suites in 2 projects.
+# exit 0

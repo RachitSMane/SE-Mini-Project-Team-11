@@ -1,0 +1,15 @@
+$ env E2E_BROWSERS=webkit npx playwright test e2e/whiteboard.spec.cjs -g TC-001 to TC-004 --timeout=120000
+# commit 12d7e34, 2026-11-02T15:13:47Z, node v26.7.0
+(node:27588) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:26364) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  ✓  1 [webkit] › e2e\whiteboard.spec.cjs:36:1 › TC-001 to TC-004: pen, shapes, text, select/move/restyle/delete and eraser synchronise (1.7m)
+
+  Slow test file: [webkit] › e2e\whiteboard.spec.cjs (1.7m)
+  Consider running tests from slow files in parallel, see https://playwright.dev/docs/test-parallel.
+  1 passed (1.8m)
+# exit 0

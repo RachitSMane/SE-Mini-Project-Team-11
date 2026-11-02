@@ -1,0 +1,15 @@
+$ npm test
+# commit d0b4937, 2026-11-02T13:59:52Z, node v26.7.0
+
+> test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand
+
+(node:12052) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Test Suites: 22 passed, 22 total
+Tests:       210 passed, 210 total
+Snapshots:   0 total
+Time:        312.384 s
+Ran all test suites in 2 projects.
+# exit 0
