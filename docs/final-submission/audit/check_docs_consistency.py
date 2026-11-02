@@ -52,7 +52,20 @@ for d in [R / 'README.md', R / 'docs/final-submission/DEMO_GUIDE.md']:
     for s in sorted(set(re.findall(r'npm run ([a-z0-9:]+)', d.read_text(encoding='utf-8')))):
         ok(s in pkg, f'{d.as_posix()}: npm run {s} exists in package.json')
 
-# 5. Relative Markdown links resolve.
+# 5. Relative Markdown links resolve to files that exist AND are tracked by git (an ignored file,
+#    e.g. *.log, exists locally but would be missing for everyone else).
+import posixpath, subprocess
+tracked = set(subprocess.run(['git', 'ls-files'], capture_output=True, text=True).stdout.split('\n'))
+tracked_dirs = {'/'.join(t.split('/')[:i]) for t in tracked for i in range(1, t.count('/') + 1)}
+untracked = []
+for d in [R / 'README.md', R / 'docs/README.md'] + sorted((R / 'docs/final-submission').rglob('*.md')):
+    for target in re.findall(r'\]\(([^)#\s]+)(?:#[^)]*)?\)', d.read_text(encoding='utf-8')):
+        if target.startswith(('http://', 'https://', 'mailto:')):
+            continue
+        full = posixpath.normpath(posixpath.join(posixpath.dirname(d.as_posix()), target)).rstrip('/')
+        if full not in tracked and full not in tracked_dirs:
+            untracked.append(f'{d.as_posix()} -> {target}')
+ok(not untracked, 'Markdown link targets are tracked by git' + (f': {untracked}' if untracked else ''))
 bad = []
 for d in [R / 'README.md', R / 'docs/README.md'] + sorted((R / 'docs/final-submission').rglob('*.md')):
     for target in re.findall(r'\]\(([^)#\s]+)(?:#[^)]*)?\)', d.read_text(encoding='utf-8')):

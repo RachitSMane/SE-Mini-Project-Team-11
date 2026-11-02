@@ -13,7 +13,7 @@ a person's review, approval, signature or presentation stays open in its own sec
 - [x] Word and PDF versions regenerated: `docs/final/Team11_SRS|SAD|STP.docx` and `.pdf`
 - [x] Root `README.md` rewritten; every command checked against `package.json`
 - [x] Traceability check passes (1,483 checks); documentation tool tests pass
-- [x] Cross-document consistency check run (`audit/check_docs_consistency.log`)
+- [x] Cross-document consistency check run (`audit/check_docs_consistency.txt`)
 - [x] Demo guide (`DEMO_GUIDE.md`) with technical explanations and contingencies
 - [x] Presentation, 17 slides, with speaker notes in the file and in `presentation/SPEAKER_NOTES.md`; PDF export; validated and visually checked in PowerPoint
 - [x] 15 real screenshots of the running application (`screenshots/`)
@@ -43,6 +43,8 @@ a person's review, approval, signature or presentation stays open in its own sec
 - [ ] Prepare the demo environment and the two fake accounts (`DEMO_GUIDE.md` §1)
 - [ ] Do one full dry run of the demo (about 15 minutes) and one of the presentation
 - [ ] Present the slides; answer questions with the demo guide §4 and §6
+- [ ] Record the results of any manual checks you have done: issues #25 and #26 were closed on 02-11-2026
+  without results, so nothing below can be marked done yet (`DOCUMENTATION_AUDIT.md` R9)
 - [ ] Manual checks that only a person can do (optional before the demonstration, release readiness report §8):
   installed stable Firefox (double-click text editing, PNG download, offline banner), Safari if a Mac is
   available, 125 % display scaling, a touch screen, the Windows high-contrast theme, a second device over
@@ -63,6 +65,6 @@ a person's review, approval, signature or presentation stays open in its own sec
 | Demo walkthrough | `docs/final-submission/DEMO_GUIDE.md` | ready for review |
 | Documentation audit | `docs/final-submission/DOCUMENTATION_AUDIT.md` | done |
 | Test evidence | `docs/evidence/2026-11-02-final-validation/`, `docs/reports/RELEASE_READINESS_2026-11-02.md`, `docs/IMPLEMENTATION_STATUS.md` | done |
-| Source code | GitHub `RachitSMane/SE-Mini-Project-Team-11`, `main` at `2b68907` (CI green) | done |
+| Source code | GitHub `RachitSMane/SE-Mini-Project-Team-11`, `main` at `2b68907` (`app-ci` run 41476112779 and `docs-check` green) | done |
 | Known limitations | README "Known limitations"; release readiness report §6 | documented |
 | Remaining scope decisions | DECISIONS.md E6; SRS §2.7 | open (section C) |

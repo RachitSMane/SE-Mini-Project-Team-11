@@ -41,6 +41,7 @@ allocated.
 | R6 | `submission/final/Team11_*.docx` are the Part-1 versions of 11-10-2026 (before implementation) | Kept unchanged as the historical Part-1 submission; the current versions are in `docs/final/` | Submit from `docs/final/` (see the checklist) |
 | R7 | Several documents cite logs "outside the repository" (`C:\Users\Lenovo\Downloads\SE_MINI_PROJECT_OUTPUT\...`) | These are already marked as outside the repository in the documents; they are local working logs | Optional: keep them locally for questions |
 | R8 | The SRS revision-history table has no row after v1.0 (11-10-2026); later changes are dated addenda in the text | Matches the team's practice since 12-10-2026; adding a version would change "version 1.0" references across documents | Team decision at sign-off |
+| R9 | Issues #25 and #26 were closed as completed by the repository owner (02-11-2026, 15:54 UTC) without recording results of the manual checks listed in release readiness report §8; the documents therefore still list those checks as open | No record of the checks exists; marking them done would be unsupported | Rachit: record the results (date, browser/device, outcome) — then §8, the checklist and the STP TC-021 addendum can be updated |
 
 ## 3. PNG export scope — evidence searched
 
@@ -63,7 +64,7 @@ allocated.
 | Traceability (IDs, requirement ↔ test ↔ RTM, SAD ↔ RTM) | `python tools/check_trace.py` | 1,483 checks passed, 0 failed |
 | Documentation tool tests | `python -m unittest discover -s tools/tests` | 14 tests, OK |
 | Lint (unchanged code) | `npx eslint .` | no findings |
-| Cross-document consistency | `python docs/final-submission/audit/check_docs_consistency.py` | 56 passed, 0 failed, 4 known exceptions (`audit/check_docs_consistency.log`): every REST route of `app.js` is in SAD API-02/03; every Socket.IO event emitted or handled by `realtimeServer.js` is in API-01; every `npm run` command in the README and demo guide exists in `package.json`; relative Markdown links resolve; quoted test counts and package versions match the evidence and `node_modules`; cited file paths exist except R2 and the git-ignored `tools/plantuml/plantuml.jar` |
+| Cross-document consistency | `python docs/final-submission/audit/check_docs_consistency.py` | 57 passed, 0 failed, 4 known exceptions (`audit/check_docs_consistency.txt`): every REST route of `app.js` is in SAD API-02/03; every Socket.IO event emitted or handled by `realtimeServer.js` is in API-01; every `npm run` command in the README and demo guide exists in `package.json`; relative Markdown links resolve and their targets are tracked by git; quoted test counts and package versions match the evidence and `node_modules`; cited file paths exist except R2 and the git-ignored `tools/plantuml/plantuml.jar` |
 | Word documents | `python tools/build_docs.py` | SRS 37 headings / 16 tables / 2 images; SAD 51 / 27 / 31; STP 55 / 47 / 0 |
 | PDF export | `tools/export_pdf.ps1 -SourceDir docs/final -OutDir docs/final` (Microsoft Word) | SRS 31 pages, SAD 65 pages, STP 45 pages |
 | Diagrams | visual comparison of `docs/diagrams/png/component-diagram.png` with the code | matches: nine components, two interfaces, MongoDB; no diagram changed |

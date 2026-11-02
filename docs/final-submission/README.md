@@ -10,7 +10,7 @@ duplicated here.
 | Presentation (17 slides, speaker notes inside) | [`presentation/Team11_Whiteboard_Final_Presentation.pptx`](presentation/Team11_Whiteboard_Final_Presentation.pptx) · [PDF](presentation/Team11_Whiteboard_Final_Presentation.pdf) |
 | Speaker notes | [`presentation/SPEAKER_NOTES.md`](presentation/SPEAKER_NOTES.md) |
 | Demo walkthrough and technical explanation | [`DEMO_GUIDE.md`](DEMO_GUIDE.md) |
-| Documentation consistency audit | [`DOCUMENTATION_AUDIT.md`](DOCUMENTATION_AUDIT.md) · [check script](audit/check_docs_consistency.py) · [log](audit/check_docs_consistency.log) |
+| Documentation consistency audit | [`DOCUMENTATION_AUDIT.md`](DOCUMENTATION_AUDIT.md) · [check script](audit/check_docs_consistency.py) · [log](audit/check_docs_consistency.txt) |
 | Screenshots of the running application (02-11-2026) | [`screenshots/`](screenshots/) |
 | SRS, SAD, STP (Word and PDF) | [`../final/`](../final/) — sources in [`../working/`](../working/) |
 | Architecture diagrams | [`../diagrams/png/`](../diagrams/png/) |
