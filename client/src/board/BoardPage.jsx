@@ -393,7 +393,7 @@ export default function BoardPage({ boardId, session, onUnauthenticated }) {
             <span className="btn-label">Members</span>
           </button>
           {isOwner && (
-            <button type="button" className="primary" onClick={() => setDialog('share')} disabled={!session}>
+            <button type="button" className="primary" onClick={() => setDialog('share')} disabled={!session} title="Share this board with a link">
               <Icon name="link" size={16} />
               <span className="btn-label">Share</span>
             </button>

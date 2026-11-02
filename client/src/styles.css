@@ -420,6 +420,13 @@ canvas.preview { display: block; width: 100%; height: auto; aspect-ratio: 760 / 
   .side { width: 264px; }
   .topbar h1 { max-width: 220px; }
 }
+/* Below 1024 px the labelled top-bar buttons no longer fit next to the title, role and status
+   (the title collapsed to nothing and the role badge overlapped the status at 780–820 px, issue #23).
+   They become icon buttons; the label stays available to screen readers and in the tooltip. */
+@media (max-width: 1024px) {
+  .topbar .btn-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .topbar-actions button:not(.icon-only) { width: var(--h); padding: 0; }
+}
 /* Narrow windows: the side panel overlays the canvas instead of shrinking it. */
 @media (max-width: 900px) {
   .side { position: absolute; top: 0; right: 0; bottom: 0; width: min(300px, calc(100% - 56px)); border-left: 0; box-shadow: var(--shadow-panel); animation: slide-in var(--dur) var(--ease); }
@@ -430,11 +437,10 @@ canvas.preview { display: block; width: 100%; height: auto; aspect-ratio: 760 / 
   .crumbs { gap: 2px; }
   .crumbs .logo, .crumb-sep, .me { display: none; }
   .back { padding: 0 var(--s-2); }
-  .back-label, .status-text, .topbar .btn-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .back-label, .status-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .topbar h1 { max-width: 34vw; }
   .status { padding: 0 6px; }
   .status-down { background: transparent; }
-  .topbar-actions button:not(.icon-only) { width: var(--h); padding: 0; }
   .topbar-actions { gap: 2px; }
 }
 @media (max-width: 640px) {
