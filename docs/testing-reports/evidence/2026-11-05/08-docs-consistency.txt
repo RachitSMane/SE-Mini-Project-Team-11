@@ -1,0 +1,63 @@
+PASS route DELETE /api/v1/boards/{boardId} documented in SAD API-02/03
+PASS route DELETE /api/v1/boards/{boardId}/links/{linkId} documented in SAD API-02/03
+PASS route DELETE /api/v1/boards/{boardId}/members/{userId} documented in SAD API-02/03
+PASS route GET /api/v1/boards documented in SAD API-02/03
+PASS route GET /api/v1/boards/{boardId} documented in SAD API-02/03
+PASS route GET /api/v1/boards/{boardId}/links documented in SAD API-02/03
+PASS route GET /api/v1/boards/{boardId}/members documented in SAD API-02/03
+PASS route GET /api/v1/boards/{boardId}/versions documented in SAD API-02/03
+PASS route GET /api/v1/boards/{boardId}/versions/{number} documented in SAD API-02/03
+PASS route GET /api/v1/health documented in SAD API-02/03
+PASS route GET /metrics (test-only, not part of the public API)
+PASS route PATCH /api/v1/boards/{boardId} documented in SAD API-02/03
+PASS route PATCH /api/v1/boards/{boardId}/members/{userId} documented in SAD API-02/03
+PASS route POST /api/v1/auth/login documented in SAD API-02/03
+PASS route POST /api/v1/auth/logout documented in SAD API-02/03
+PASS route POST /api/v1/auth/register documented in SAD API-02/03
+PASS route POST /api/v1/boards documented in SAD API-02/03
+PASS route POST /api/v1/boards/{boardId}/links documented in SAD API-02/03
+PASS route POST /api/v1/boards/{boardId}/transfer-ownership documented in SAD API-02/03
+PASS route POST /api/v1/boards/{boardId}/versions/{number}/restore documented in SAD API-02/03
+PASS route POST /api/v1/links/resolve documented in SAD API-02/03
+PASS socket event access:revoked documented in SAD API-01
+PASS socket event board:join documented in SAD API-01
+PASS socket event board:leave documented in SAD API-01
+PASS socket event board:renamed documented in SAD API-01
+PASS socket event board:state documented in SAD API-01
+PASS socket event notice documented in SAD API-01
+PASS socket event op:applied documented in SAD API-01
+PASS socket event op:submit documented in SAD API-01
+PASS socket event presence:update documented in SAD API-01
+PASS socket event role:changed documented in SAD API-01
+PASS socket event version:created documented in SAD API-01
+PASS socket event version:restored documented in SAD API-01
+KNOWN EXCEPTION missing docs/evidence/2026-10-14-full-verification/15-tc022-cpuload-final.txt: not committed; DOCUMENTATION_AUDIT.md R2
+KNOWN EXCEPTION missing docs/evidence/2026-10-14-tc022-performance/10-cpuload-after.txt: not committed; DOCUMENTATION_AUDIT.md R2
+KNOWN EXCEPTION missing docs/evidence/2026-10-17-tc021-firefox/RESULTS.md: not committed; DOCUMENTATION_AUDIT.md R2
+KNOWN EXCEPTION missing tools/plantuml/plantuml.jar: git-ignored local download (docs/README.md, one-time setup)
+PASS 69 cited file paths exist (apart from 4 known exceptions)
+PASS README.md: npm run build exists in package.json
+PASS README.md: npm run build:test exists in package.json
+PASS README.md: npm run db:start exists in package.json
+PASS README.md: npm run dev exists in package.json
+PASS README.md: npm run lint exists in package.json
+PASS README.md: npm run perf exists in package.json
+PASS README.md: npm run test:e2e exists in package.json
+PASS README.md: npm run test:e2e:browsers exists in package.json
+PASS README.md: npm run test:integration exists in package.json
+PASS README.md: npm run test:unit exists in package.json
+PASS docs/final-submission/DEMO_GUIDE.md: npm run db:start exists in package.json
+PASS docs/final-submission/DEMO_GUIDE.md: npm run dev exists in package.json
+PASS docs/final-submission/DEMO_GUIDE.md: npm run lint exists in package.json
+PASS docs/final-submission/DEMO_GUIDE.md: npm run test:unit exists in package.json
+PASS Markdown link targets are tracked by git
+PASS relative Markdown links resolve
+PASS evidence: 210 unit+integration tests passed after the dependency update
+PASS evidence: 31 Chromium E2E tests passed
+PASS e2e spec files contain 31 tests (README says 31)
+PASS react 18.3.1 matches README 18.3
+PASS vite 6.4.4 matches README 6.4
+PASS express 5.3.0 matches README 5.3
+PASS mongoose 8.24.5 matches README 8.24
+
+57 passed, 0 failed, 4 known exceptions

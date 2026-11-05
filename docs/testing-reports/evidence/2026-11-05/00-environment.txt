@@ -1,0 +1,16 @@
+Test session: 05-11-2026 (IST, UTC+05:30), local machine of the repository owner, run by Claude Code on request.
+Code under test: git tree e48707687ef35d69c70dcf9614cb7d2ec3587e62
+  = branch docs/final-submission at 8bca53e = main at 64876d8 (identical trees)
+Application code: unchanged by this session.
+OS: Microsoft Windows 10 Pro 10.0.19045
+CPU: Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz; RAM 32,570 MB
+Node.js: v26.7.0; npm: 11.19.0
+MongoDB: db version v8.2.1 (throw-away local mongod started by the Jest/Playwright global set-up)
+Jest: 30.5.2 (coverage provider: v8, built into Jest)
+Playwright: 1.50.1, Chromium 133.0.6943.16 (Playwright build)
+Python: Python 3.13.2
+Dependencies: installed with "npm ci" from the committed package-lock.json (no dependency added or changed).
+
+Timings:
+  Jest full run with coverage: 2026-11-05T22:03:29+05:30 -> 2026-11-05T22:08:47+05:30
+  E2E Chromium:               2026-11-05T22:09:39+05:30 -> 2026-11-05T22:11:02+05:30

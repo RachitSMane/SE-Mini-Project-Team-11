@@ -38,6 +38,7 @@ docs/
   final/               generated Word documents and their PDF exports (only the final-assembly branch commits these)
   final-submission/    final submission package: index, presentation, demo guide, audit, checklist, screenshots
   reports/             release readiness reports (latest: RELEASE_READINESS_2026-11-02.md)
+  testing-reports/     unit, system validation, code coverage and branch coverage reports (05-11-2026)
   evidence/            command logs and screenshots behind every reported result
 tools/
   check_trace.py       ID and traceability checks (run before every push)

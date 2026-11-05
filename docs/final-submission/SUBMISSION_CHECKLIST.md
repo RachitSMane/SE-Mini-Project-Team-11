@@ -20,6 +20,25 @@ a person's review, approval, signature or presentation stays open in its own sec
 - [x] Release readiness report and test evidence referenced (`docs/reports/RELEASE_READINESS_2026-11-02.md`, `docs/evidence/2026-11-02-final-validation/`)
 - [x] Documentation audit with remaining issues and decisions (`DOCUMENTATION_AUDIT.md`)
 
+### A2. Added 05-11-2026 (evaluation-checklist audit)
+
+- [x] Every item of `02TheCheckList.pdf` and `01FAQs_MiniProjectDemo.pdf` audited with status and evidence (`CHECKLIST_AUDIT.md`); exported SRS/SAD/STP PDFs checked — no document correction needed
+- [x] Test suites re-run on the `main` code (unit 110/110, integration 100/100, E2E Chromium 31/31; lint, traceability, documentation checks pass); logs in `docs/testing-reports/evidence/2026-11-05/`
+- [x] Four testing reports generated from that run: `docs/testing-reports/UNIT_TESTING_REPORT.md`, `SYSTEM_VALIDATION_REPORT.md`, `CODE_COVERAGE_REPORT.md`, `BRANCH_COVERAGE_REPORT.md` (+ HTML coverage report)
+- [x] GitHub backlog, milestones, PRs, reviews and Actions audited (`AGILE_AND_GITHUB_AUDIT.md`)
+- [x] Deviations register for the demo (`DEVIATIONS.md`)
+- [x] Sprint video recording scripts, format and destination (`sprint-videos/README.md`) — videos themselves not recorded
+- [x] Viva preparation: SDLC, Agile, individual contributions from Git/GitHub, PR process, 16 likely questions (`VIVA_PREPARATION.md`)
+
+### A3. Open from the 05-11-2026 audit (team action)
+
+- [ ] Record and upload the 1-minute Sprint 1 and 2-minute Sprint 2 videos (`sprint-videos/README.md`); first agree the four-milestone → two-sprint mapping
+- [ ] Check the GitHub Project (`gh auth refresh -s read:project`); create and link it if missing (`AGILE_AND_GITHUB_AUDIT.md` §2)
+- [ ] Estimate and enter story points for every backlog item (team decision — not invented)
+- [ ] Confirm the issue → SRS requirement mapping (`AGILE_AND_GITHUB_AUDIT.md` §4) and enter it in the Project
+- [ ] Let the owner formally review (Approve) the remaining PRs before merging; consider branch protection
+- [ ] Each member rehearses their contribution and PR walkthrough (`VIVA_PREPARATION.md` §3)
+
 ## B. Requires your review (Rachit)
 
 - [ ] Read the corrected SRS §2.7, SAD API-01/API-02/§4.5–§4.6 and STP §4–§6, §14 (or their diffs on this branch)
@@ -68,3 +87,13 @@ a person's review, approval, signature or presentation stays open in its own sec
 | Source code | GitHub `RachitSMane/SE-Mini-Project-Team-11`, `main` at `2b68907` (`app-ci` run 41476112779 and `docs-check` green) | done |
 | Known limitations | README "Known limitations"; release readiness report §6 | documented |
 | Remaining scope decisions | DECISIONS.md E6; SRS §2.7 | open (section C) |
+| Unit Testing Report | `docs/testing-reports/UNIT_TESTING_REPORT.md` | done 05-11-2026 |
+| System Validation Report | `docs/testing-reports/SYSTEM_VALIDATION_REPORT.md` | done 05-11-2026 |
+| Code Coverage Report | `docs/testing-reports/CODE_COVERAGE_REPORT.md` (+ `coverage-html/`) | done 05-11-2026 |
+| Branch Coverage Report | `docs/testing-reports/BRANCH_COVERAGE_REPORT.md` | done 05-11-2026 |
+| Sprint 1 video (1 min) | `docs/final-submission/sprint-videos/Team11_Sprint1_Demo_1min.mp4` | **not recorded** — script ready |
+| Sprint 2 video (2 min) | `docs/final-submission/sprint-videos/Team11_Sprint2_Demo_2min.mp4` | **not recorded** — script ready |
+| Deviations register | `docs/final-submission/DEVIATIONS.md` | done 05-11-2026 |
+| Evaluation checklist audit | `docs/final-submission/CHECKLIST_AUDIT.md` | done 05-11-2026 |
+| Agile / GitHub audit | `docs/final-submission/AGILE_AND_GITHUB_AUDIT.md` | done; Project and story points open |
+| Viva preparation | `docs/final-submission/VIVA_PREPARATION.md` | ready for review |

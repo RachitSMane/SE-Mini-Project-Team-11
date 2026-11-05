@@ -7,6 +7,12 @@ duplicated here.
 | Item | File |
 |---|---|
 | Submission checklist (what is done, what needs review or approval) | [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) |
+| **Evaluation checklist audit** — every item of the official checklist and FAQ, with status and evidence (05-11-2026) | [`CHECKLIST_AUDIT.md`](CHECKLIST_AUDIT.md) |
+| **Testing reports** — Unit Testing, System Validation, Code Coverage, Branch Coverage (05-11-2026) | [`../testing-reports/`](../testing-reports/README.md): [Unit](../testing-reports/UNIT_TESTING_REPORT.md) · [System validation](../testing-reports/SYSTEM_VALIDATION_REPORT.md) · [Code coverage](../testing-reports/CODE_COVERAGE_REPORT.md) · [Branch coverage](../testing-reports/BRANCH_COVERAGE_REPORT.md) |
+| **Sprint 1 (1 min) and Sprint 2 (2 min) videos** — not yet recorded; scripts, format and destination | [`sprint-videos/README.md`](sprint-videos/README.md) |
+| Deviations from the original SRS, SAD and STP (one page for the demo) | [`DEVIATIONS.md`](DEVIATIONS.md) |
+| Agile planning and GitHub audit (Project, backlog, story points, PRs, reviews) | [`AGILE_AND_GITHUB_AUDIT.md`](AGILE_AND_GITHUB_AUDIT.md) |
+| Viva preparation (SDLC, Agile, individual contributions, PR process, likely questions) | [`VIVA_PREPARATION.md`](VIVA_PREPARATION.md) |
 | Presentation (17 slides, speaker notes inside) | [`presentation/Team11_Whiteboard_Final_Presentation.pptx`](presentation/Team11_Whiteboard_Final_Presentation.pptx) · [PDF](presentation/Team11_Whiteboard_Final_Presentation.pdf) |
 | Speaker notes | [`presentation/SPEAKER_NOTES.md`](presentation/SPEAKER_NOTES.md) |
 | Demo walkthrough and technical explanation | [`DEMO_GUIDE.md`](DEMO_GUIDE.md) |
