@@ -43,10 +43,10 @@ event is documented in the SAD.
 
 | # | Deviation | Where documented | Status |
 |---|---|---|---|
-| D-15 | Four sprint milestones instead of the course's two sprints | `sprint-videos/README.md` §1; AGILE_AND_GITHUB_AUDIT.md | mapping to be confirmed by the team |
+| D-15 | Four sprint milestones instead of the course's two sprints | `sprint-videos/README.md` §1; AGILE_AND_GITHUB_AUDIT.md §5.5; AGILE_ESTIMATION_AND_PLANNING_AUDIT.md §12 (mapping options; first-draft figures 46 / 62) and §16.4 (revised proposal: 49 / 62 points) | mapping to be confirmed by the team and accepted by the mentor (MANUAL_PENDING_DELIVERABLES.md M1) |
 | D-16 | Backlog issues created on 30-10-2026, after the planned sprint dates; code merged 26-10 to 02-11-2026 | AGILE_AND_GITHUB_AUDIT.md §3; presentation slide 15 | disclosed |
 | D-17 | No formal GitHub reviews on PRs; some teammate PRs self-merged | AGILE_AND_GITHUB_AUDIT.md §5 | cannot be changed retroactively; explain in viva |
-| D-18 | No story points visible on the backlog | AGILE_AND_GITHUB_AUDIT.md §1–§2 | open (team) |
+| D-18 | No story points visible on the backlog | AGILE_AND_GITHUB_AUDIT.md §1–§2; retrospective proposal (111 points) in AGILE_ESTIMATION_AND_PLANNING_AUDIT.md §16 | open: proposal awaiting team and mentor approval; not written to GitHub (MANUAL_PENDING_DELIVERABLES.md M2) |
 
 ## 5. How to explain deviations in the demo (30 seconds)
 

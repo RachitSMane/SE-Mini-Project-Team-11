@@ -1,6 +1,6 @@
 # Final submission checklist — Team 11
 
-Status as of 02-11-2026, branch `docs/final-submission`. Legend: **[x]** done and checked; **[ ]** open.
+Status as of 02-11-2026, updated 06-11-2026 (§A4), branch `docs/final-submission`. Legend: **[x]** done and checked; **[ ]** open.
 Items prepared by Claude are marked done only when the preparation itself is complete; anything that needs
 a person's review, approval, signature or presentation stays open in its own section.
 
@@ -53,6 +53,17 @@ a person's review, approval, signature or presentation stays open in its own sec
 - [ ] Prepare viva answers on the retrospective milestone dates, missing in-progress tracking, unreviewed PRs and the bulk-restore commits (`AGILE_AND_GITHUB_AUDIT.md` §5–§8)
 - [ ] #25/#26 were closed with unrecorded manual checks: record results or state that they were not done
 
+### A4. Added 06-11-2026 (deliverables completion pass — no GitHub record changed)
+
+- [x] Part 1 re-verified from the exported PDFs:
+  - SRS: 31 pages; 35 FRs, 7 NFRs, SEC-OBJ-001–003, 8 SEC-REQs, use cases UC-01 and UC-02.
+  - SAD: 65 pages; SD-01–SD-05, API-01–API-03, COMP-01–COMP-09, layered pattern, STRIDE, error handling.
+  - STP: 45 pages; §5.1 security validation; no TBD or TODO.
+- [x] All 135 relative links in the 81 Markdown files resolve to tracked files once this pass is committed (repository-wide check, including `docs/testing-reports/`)
+- [x] Browser claims checked: Firefox 159 (experimental BiDi) reported as 22 passed / 7 failed, and Apple Safari as not tested, wherever they appear
+- [x] Branch `docs/final-submission` pushed (`a2ffc10`); the documentation PR is not opened yet (owner's approval)
+- [x] Every task that needs a person, with the evidence it requires and where to save it: [`MANUAL_PENDING_DELIVERABLES.md`](MANUAL_PENDING_DELIVERABLES.md) (M1–M15), including the PR review, contribution verification and video pre-flight checklists
+
 ## B. Requires your review (Rachit)
 
 - [ ] Read the corrected SRS §2.7, SAD API-01/API-02/§4.5–§4.6 and STP §4–§6, §14 (or their diffs on this branch)
@@ -60,7 +71,7 @@ a person's review, approval, signature or presentation stays open in its own sec
 - [ ] Open `docs/final/Team11_*.pdf` and check the layout of the new sections
 - [ ] Rehearse with the presentation; adjust wording you would not say yourself
 - [ ] Decide whether to add the missing TC-021 evidence (`DOCUMENTATION_AUDIT.md` R2) — crop the personal content out of `00-about-firefox.PNG` first
-- [ ] Push `docs/final-submission` and open a Pull Request (not done by Claude, by instruction)
+- [ ] Open the Pull Request from `docs/final-submission` into `main` (branch pushed 06-11-2026 at `a2ffc10`; PR not opened, by instruction) and have a teammate review it (`MANUAL_PENDING_DELIVERABLES.md` M7)
 - [ ] Optional: enable branch protection on `main` (DECISIONS.md E4)
 
 ## C. Requires mentor or team approval
@@ -98,7 +109,7 @@ a person's review, approval, signature or presentation stays open in its own sec
 | Demo walkthrough | `docs/final-submission/DEMO_GUIDE.md` | ready for review |
 | Documentation audit | `docs/final-submission/DOCUMENTATION_AUDIT.md` | done |
 | Test evidence | `docs/evidence/2026-11-02-final-validation/`, `docs/reports/RELEASE_READINESS_2026-11-02.md`, `docs/IMPLEMENTATION_STATUS.md` | done |
-| Source code | GitHub `RachitSMane/SE-Mini-Project-Team-11`, `main` at `2b68907` (`app-ci` run 41476112779 and `docs-check` green) | done |
+| Source code | GitHub `RachitSMane/SE-Mini-Project-Team-11`, `main` at `64876d8` (merge of PR #34; `app-ci` and `docs-check` green, re-checked 06-11-2026). Application code unchanged since `85da387` (02-11-2026) | done |
 | Known limitations | README "Known limitations"; release readiness report §6 | documented |
 | Remaining scope decisions | DECISIONS.md E6; SRS §2.7 | open (section C) |
 | Unit Testing Report | `docs/testing-reports/UNIT_TESTING_REPORT.md` | done 05-11-2026 |
@@ -110,4 +121,8 @@ a person's review, approval, signature or presentation stays open in its own sec
 | Deviations register | `docs/final-submission/DEVIATIONS.md` | done 05-11-2026 |
 | Evaluation checklist audit | `docs/final-submission/CHECKLIST_AUDIT.md` | done 05-11-2026 |
 | Agile / GitHub audit | `docs/final-submission/AGILE_AND_GITHUB_AUDIT.md` | done; Project and story points open |
+| Retrospective estimate proposal (111 points; academic sprints 49 / 62) | `docs/final-submission/AGILE_ESTIMATION_AND_PLANNING_AUDIT.md` §16 | proposal; team and mentor approval pending (M1, M2) |
+| Issue ↔ SRS traceability proposal | `docs/final-submission/ISSUE_REQUIREMENT_TRACEABILITY.md` | proposal; team confirmation pending (M4) |
+| Individual contribution assessment | `docs/final-submission/INDIVIDUAL_CONTRIBUTION_ASSESSMENT.md` | done; confirmation dates and mentor review pending (M8, M9) |
+| Manual pending deliverables | `docs/final-submission/MANUAL_PENDING_DELIVERABLES.md` | done 06-11-2026; tasks M1–M15 open |
 | Viva preparation | `docs/final-submission/VIVA_PREPARATION.md` | ready for review |

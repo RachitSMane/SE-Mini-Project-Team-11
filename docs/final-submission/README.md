@@ -7,6 +7,7 @@ duplicated here.
 | Item | File |
 |---|---|
 | Submission checklist (what is done, what needs review or approval) | [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) |
+| **Manual pending deliverables** — every task that needs a teammate, the owner or the mentor: what is missing, who acts, what evidence and where; PR review, contribution verification and video pre-flight checklists (06-11-2026) | [`MANUAL_PENDING_DELIVERABLES.md`](MANUAL_PENDING_DELIVERABLES.md) |
 | **Evaluation checklist audit** — every item of the official checklist and FAQ, with status and evidence (05-11-2026) | [`CHECKLIST_AUDIT.md`](CHECKLIST_AUDIT.md) |
 | **Testing reports** — Unit Testing, System Validation, Code Coverage, Branch Coverage (05-11-2026) | [`../testing-reports/`](../testing-reports/README.md): [Unit](../testing-reports/UNIT_TESTING_REPORT.md) · [System validation](../testing-reports/SYSTEM_VALIDATION_REPORT.md) · [Code coverage](../testing-reports/CODE_COVERAGE_REPORT.md) · [Branch coverage](../testing-reports/BRANCH_COVERAGE_REPORT.md) |
 | **Sprint 1 (1 min) and Sprint 2 (2 min) videos** — not yet recorded; scripts, format and destination | [`sprint-videos/README.md`](sprint-videos/README.md) |

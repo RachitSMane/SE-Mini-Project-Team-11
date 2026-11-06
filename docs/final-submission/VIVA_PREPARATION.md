@@ -29,6 +29,8 @@ implementation with continuous integration and test execution against the plan.
 - **Sprints:** four two-week milestones (Foundation; Core Whiteboard; Real-Time Collaboration; Testing and
   Finalization), each with objective, scope and completion notes in the milestone description. For the
   course's "Sprint 1 / Sprint 2", use the mapping the team confirms (`sprint-videos/README.md` §1).
+  The proposal (option A, not yet approved) maps milestones 1 + 2 to Sprint 1 (49 points) and milestones
+  3 + 4 to Sprint 2 (62 points) (`AGILE_ESTIMATION_AND_PLANNING_AUDIT.md` §12, §16.4).
 - **Estimation:** story points are **not on record** in the issues. If the team estimates them now in
   the GitHub Project, say they were estimated retrospectively. If you estimated informally during
   planning, say how (e.g. "we sized by priority labels and effort in days") — only if true. The latest

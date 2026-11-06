@@ -103,3 +103,16 @@ The INCOMPLETE items are all outside what can be done by editing the repository 
 evidence: GitHub Project, story points, requirement IDs on the backlog, PR reviews, the two videos and
 the team's own viva preparation. The steps are in `AGILE_AND_GITHUB_AUDIT.md` §2 and
 `sprint-videos/README.md`.
+
+## Update 06-11-2026
+
+**All statuses above are unchanged.** Re-checked on 06-11-2026:
+- Part 1 facts, from the exported PDFs.
+- 0 PR reviews, no video files, no tags.
+- GitHub Project still unreadable (`read:project` missing).
+- Last `main` CI green on `64876d8`.
+
+New since 05-11:
+- **2.3 and 2.5:** a revised retrospective estimate proposal exists (111 points; academic sprints 49 / 62, `AGILE_ESTIMATION_AND_PLANNING_AUDIT.md` §16). It is **not approved** by the team or mentor and is not on GitHub, so both items stay INCOMPLETE.
+- **4.4:** individual contribution evidence: `INDIVIDUAL_CONTRIBUTION_ASSESSMENT.md`.
+- **Open items:** every INCOMPLETE or BLOCKED item now has an owner, the evidence it needs and a target location in `MANUAL_PENDING_DELIVERABLES.md` (M1–M15).
