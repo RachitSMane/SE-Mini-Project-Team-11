@@ -1,0 +1,1 @@
+npx eslint . -> exit 0, no output (no findings)

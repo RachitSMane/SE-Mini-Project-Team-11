@@ -15,6 +15,7 @@ restore, and are shared through expiring, revocable Viewer and Editor links.
 | Verified implementation state, test by test | [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md) |
 | Latest release readiness report | [`docs/reports/RELEASE_READINESS_2026-11-02.md`](docs/reports/RELEASE_READINESS_2026-11-02.md) |
 | Final submission package (presentation, demo guide, audit, checklist) | [`docs/final-submission/`](docs/final-submission/README.md) |
+| Testing reports: unit, system validation, code coverage, branch coverage (05-11-2026) | [`docs/testing-reports/`](docs/testing-reports/README.md) |
 
 ## Contents
 

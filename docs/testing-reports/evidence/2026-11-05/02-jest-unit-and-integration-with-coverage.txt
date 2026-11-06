@@ -1,0 +1,65 @@
+(node:4484) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+---------------------|---------|----------|---------|---------|--------------------------------------------------------
+File                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                      
+---------------------|---------|----------|---------|---------|--------------------------------------------------------
+All files            |   58.24 |    89.66 |   87.85 |   58.24 |                                                        
+ client/src          |    12.8 |    79.16 |   33.33 |    12.8 |                                                        
+  App.jsx            |       0 |      100 |       0 |       0 | 1-57                                                   
+  api.js             |   98.14 |    79.16 |     100 |   98.14 | 45                                                     
+  icons.jsx          |       0 |      100 |       0 |       0 | 1-95                                                   
+  main.jsx           |       0 |      100 |       0 |       0 | 1-10                                                   
+  router.jsx         |       0 |      100 |       0 |       0 | 1-42                                                   
+  session.js         |       0 |      100 |       0 |       0 | 1-36                                                   
+  ui.jsx             |       0 |      100 |       0 |       0 | 1-120                                                  
+ client/src/board    |   14.75 |    88.75 |   56.66 |   14.75 |                                                        
+  BoardPage.jsx      |       0 |      100 |       0 |       0 | 1-492                                                  
+  Canvas.jsx         |       0 |      100 |       0 |       0 | 1-221                                                  
+  OwnerDialogs.jsx   |       0 |      100 |       0 |       0 | 1-242                                                  
+  SidePanel.jsx      |       0 |      100 |       0 |       0 | 1-210                                                  
+  Toolbar.jsx        |       0 |      100 |       0 |       0 | 1-182                                                  
+  exportImage.js     |   59.09 |     87.5 |   42.85 |   59.09 | 16-18,65-78,80-88,92-110                               
+  geometry.js        |    98.3 |    88.88 |     100 |    98.3 | 34,63,90                                               
+  render.js          |   17.28 |      100 |       0 |   17.28 | 8-12,15-57,60-68,72-81                                 
+ client/src/pages    |       0 |      100 |       0 |       0 |                                                        
+  Auth.jsx           |       0 |      100 |       0 |       0 | 1-124                                                  
+  Dashboard.jsx      |       0 |      100 |       0 |       0 | 1-217                                                  
+  Join.jsx           |       0 |      100 |       0 |       0 | 1-117                                                  
+ server/src          |   91.29 |    88.26 |    87.8 |   91.29 |                                                        
+  config.js          |     100 |     92.5 |     100 |     100 | 10,16,49                                               
+  errors.js          |     100 |    94.73 |     100 |     100 | 67-68                                                  
+  faults.js          |   95.83 |       40 |     100 |   95.83 | 29-30                                                  
+  index.js           |       0 |      100 |       0 |       0 | 1-24                                                   
+  logger.js          |   94.28 |    93.22 |      75 |   94.28 | 76-77,133-138                                          
+  recovery.js        |   63.07 |       50 |     100 |   63.07 | 17-35,47-48,61-63                                      
+  server.js          |   96.34 |    81.25 |     100 |   96.34 | 68-70                                                  
+  validation.js      |     100 |    98.07 |     100 |     100 | 76                                                     
+ server/src/access   |   99.73 |    93.05 |     100 |   99.73 |                                                        
+  accessService.js   |    99.7 |    92.59 |     100 |    99.7 | 50                                                     
+  policy.js          |     100 |      100 |     100 |     100 |                                                        
+ server/src/auth     |    98.8 |    94.33 |     100 |    98.8 |                                                        
+  authService.js     |    98.8 |    94.33 |     100 |    98.8 | 64-65                                                  
+ server/src/db       |   99.68 |    94.28 |     100 |   99.68 |                                                        
+  integrity.js       |     100 |      100 |     100 |     100 |                                                        
+  models.js          |    99.6 |    89.47 |     100 |    99.6 | 215                                                    
+ server/src/realtime |    94.5 |    89.83 |   95.55 |    94.5 |                                                        
+  boardEngine.js     |   87.33 |       86 |     100 |   87.33 | 74-78,102-104,113-115,122-125,138-141                  
+  boardQueue.js      |     100 |      100 |     100 |     100 |                                                        
+  boardStore.js      |     100 |    88.23 |     100 |     100 | 29,41                                                  
+  realtimeServer.js  |   96.27 |     90.9 |   93.75 |   96.27 | 115-121,278-282                                        
+ server/src/rest     |   97.99 |    94.11 |     100 |   97.99 |                                                        
+  app.js             |   97.99 |    94.11 |     100 |   97.99 | 105-106,241,243-244                                    
+ server/src/versions |   90.03 |    78.26 |     100 |   90.03 |                                                        
+  versionService.js  |   90.03 |    78.26 |     100 |   90.03 | 20-21,23,77-79,101-104,172-174,181-184,222-226,238-240 
+ shared/src          |    97.1 |     89.9 |   98.07 |    97.1 |                                                        
+  errorCodes.js      |     100 |    96.87 |     100 |     100 | 72                                                     
+  objects.js         |     100 |    88.46 |     100 |     100 | 39,45,81                                               
+  syncClient.js      |    95.8 |    88.75 |   97.61 |    95.8 | 118-125,247-249,338-343                                
+---------------------|---------|----------|---------|---------|--------------------------------------------------------
+
+Test Suites: 22 passed, 22 total
+Tests:       210 passed, 210 total
+Snapshots:   0 total
+Time:        304.754 s
+Ran all test suites in 2 projects.
+Test results written to: ..\..\..\AppData\Local\Temp\claude\c87d137cbbb23e75\253c8e16-8964-484f-91a3-8a2144c2c8cb\scratchpad\jest-results.json
