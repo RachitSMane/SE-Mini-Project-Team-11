@@ -30,14 +30,28 @@ a person's review, approval, signature or presentation stays open in its own sec
 - [x] Sprint video recording scripts, format and destination (`sprint-videos/README.md`) — videos themselves not recorded
 - [x] Viva preparation: SDLC, Agile, individual contributions from Git/GitHub, PR process, 16 likely questions (`VIVA_PREPARATION.md`)
 
+### A2b. Added 05-11-2026 (GitHub Agile planning audit — no GitHub record changed)
+
+- [x] All 20 issues read in full (bodies, comments, timelines, cross-references); inventory and four-sprint analysis (`AGILE_AND_GITHUB_AUDIT.md` §3–§5)
+- [x] New evidence: a GitHub Project v2 exists and holds all 20 issues (timeline events); its fields remain unreadable without `read:project`
+- [x] Missing and incomplete Agile fields listed with recommended actions (`AGILE_AND_GITHUB_AUDIT.md` §6)
+- [x] Retrospective Fibonacci story-point **proposal** for all 20 issues, with rationale, confidence and sprint totals (`STORY_POINT_ESTIMATION.md`) — not team-agreed
+- [x] Proposed issue → SRS mapping and coverage gaps (`ISSUE_REQUIREMENT_TRACEABILITY.md`) — not approved
+- [x] Ownership vs contribution analysis from Git and GitHub (`AGILE_AND_GITHUB_AUDIT.md` §7)
+
 ### A3. Open from the 05-11-2026 audit (team action)
 
 - [ ] Record and upload the 1-minute Sprint 1 and 2-minute Sprint 2 videos (`sprint-videos/README.md`); first agree the four-milestone → two-sprint mapping
-- [ ] Check the GitHub Project (`gh auth refresh -s read:project`); create and link it if missing (`AGILE_AND_GITHUB_AUDIT.md` §2)
-- [ ] Estimate and enter story points for every backlog item (team decision — not invented)
-- [ ] Confirm the issue → SRS requirement mapping (`AGILE_AND_GITHUB_AUDIT.md` §4) and enter it in the Project
+- [ ] Check the GitHub Project (`gh auth refresh -s read:project`): it exists (issue timelines) but its fields and repository link are unverified (`AGILE_AND_GITHUB_AUDIT.md` §2)
+- [ ] Estimate and enter story points for every backlog item (team decision — not invented); start from the revised 111-point proposal in `AGILE_ESTIMATION_AND_PLANNING_AUDIT.md` §16 (pending team and mentor approval; `STORY_POINT_ESTIMATION.md` is the superseded first draft)
+- [ ] Confirm the issue → SRS requirement mapping (`ISSUE_REQUIREMENT_TRACEABILITY.md` §2) and enter it in the Project
 - [ ] Let the owner formally review (Approve) the remaining PRs before merging; consider branch protection
 - [ ] Each member rehearses their contribution and PR walkthrough (`VIVA_PREPARATION.md` §3)
+- [ ] Hold a retrospective estimation session; adopt, change or reject the proposed points of the revised proposal (`AGILE_ESTIMATION_AND_PLANNING_AUDIT.md` §16; team and mentor approval pending)
+- [ ] Decide the four-milestone → two-sprint mapping and record it in `docs/DECISIONS.md` (`AGILE_AND_GITHUB_AUDIT.md` §5.5)
+- [ ] Decide whether to add clearly labelled retrospective backlog items for uncovered requirements (`ISSUE_REQUIREMENT_TRACEABILITY.md` §5)
+- [ ] Prepare viva answers on the retrospective milestone dates, missing in-progress tracking, unreviewed PRs and the bulk-restore commits (`AGILE_AND_GITHUB_AUDIT.md` §5–§8)
+- [ ] #25/#26 were closed with unrecorded manual checks: record results or state that they were not done
 
 ## B. Requires your review (Rachit)
 

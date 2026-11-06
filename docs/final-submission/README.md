@@ -11,7 +11,11 @@ duplicated here.
 | **Testing reports** — Unit Testing, System Validation, Code Coverage, Branch Coverage (05-11-2026) | [`../testing-reports/`](../testing-reports/README.md): [Unit](../testing-reports/UNIT_TESTING_REPORT.md) · [System validation](../testing-reports/SYSTEM_VALIDATION_REPORT.md) · [Code coverage](../testing-reports/CODE_COVERAGE_REPORT.md) · [Branch coverage](../testing-reports/BRANCH_COVERAGE_REPORT.md) |
 | **Sprint 1 (1 min) and Sprint 2 (2 min) videos** — not yet recorded; scripts, format and destination | [`sprint-videos/README.md`](sprint-videos/README.md) |
 | Deviations from the original SRS, SAD and STP (one page for the demo) | [`DEVIATIONS.md`](DEVIATIONS.md) |
-| Agile planning and GitHub audit (Project, backlog, story points, PRs, reviews) | [`AGILE_AND_GITHUB_AUDIT.md`](AGILE_AND_GITHUB_AUDIT.md) |
+| Agile planning and GitHub audit (Project, issue inventory, sprints, missing fields, ownership, PRs) | [`AGILE_AND_GITHUB_AUDIT.md`](AGILE_AND_GITHUB_AUDIT.md) |
+| Retrospective story-point estimation — **superseded first draft (108 points)**. The current proposal is the revised 111-point estimate in `AGILE_ESTIMATION_AND_PLANNING_AUDIT.md` §16, still pending team and mentor approval | [`STORY_POINT_ESTIMATION.md`](STORY_POINT_ESTIMATION.md) |
+| **Agile estimation and planning audit** — every issue with proposed Fibonacci points, dependencies, missing fields, sprint and assignee totals, two-sprint mapping — **proposal, needs team/mentor approval** (06-11-2026) | [`AGILE_ESTIMATION_AND_PLANNING_AUDIT.md`](AGILE_ESTIMATION_AND_PLANNING_AUDIT.md) |
+| Issue ↔ SRS requirement traceability — **proposal** | [`ISSUE_REQUIREMENT_TRACEABILITY.md`](ISSUE_REQUIREMENT_TRACEABILITY.md) |
+| **Individual contribution assessment (RachitSMane)** — evidence for each issue, retrospective assigned points (22, a proposal) versus a separate equivalent individual workload (Rachit 27 · Krishna 31 · Prithvi 27 · Pranav 26 = 111). Agreed by the affected teammates; mentor review pending (06-11-2026) | [`INDIVIDUAL_CONTRIBUTION_ASSESSMENT.md`](INDIVIDUAL_CONTRIBUTION_ASSESSMENT.md) |
 | Viva preparation (SDLC, Agile, individual contributions, PR process, likely questions) | [`VIVA_PREPARATION.md`](VIVA_PREPARATION.md) |
 | Presentation (17 slides, speaker notes inside) | [`presentation/Team11_Whiteboard_Final_Presentation.pptx`](presentation/Team11_Whiteboard_Final_Presentation.pptx) · [PDF](presentation/Team11_Whiteboard_Final_Presentation.pdf) |
 | Speaker notes | [`presentation/SPEAKER_NOTES.md`](presentation/SPEAKER_NOTES.md) |

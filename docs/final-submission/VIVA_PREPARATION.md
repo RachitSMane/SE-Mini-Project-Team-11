@@ -31,7 +31,13 @@ implementation with continuous integration and test execution against the plan.
   course's "Sprint 1 / Sprint 2", use the mapping the team confirms (`sprint-videos/README.md` §1).
 - **Estimation:** story points are **not on record** in the issues. If the team estimates them now in
   the GitHub Project, say they were estimated retrospectively. If you estimated informally during
-  planning, say how (e.g. "we sized by priority labels and effort in days") — only if true.
+  planning, say how (e.g. "we sized by priority labels and effort in days") — only if true. The latest
+  retrospective proposal is in `AGILE_ESTIMATION_AND_PLANNING_AUDIT.md` §16:
+  - **111 points**; sprint load 11 / 38 / 18 / 44;
+  - assignees: Krishna 31, Pranav 29, Prithvi 29, Rachit 22;
+  - still **subject to team and mentor approval**, not team-agreed values.
+
+  `STORY_POINT_ESTIMATION.md` (108 points) is the superseded first draft.
 - **Blockages (real examples):** (1) the app code was in local working trees and had to be restored
   into the repository (PR #27, "restore missing application files from team working-tree snapshot");
   (2) a merge conflict broke `BoardPage.jsx` on `main` (PR #28, red CI) — repaired in PR #31;
@@ -60,6 +66,10 @@ security and traceability lead.
 
 **Exceptions to know about:** #17 (Rachit) has no PR of his own on record; #26 (Pranav) was completed
 in PR #33 by Rachit; PR #27 touched issues of all four members (`AGILE_AND_GITHUB_AUDIT.md` §5).
+The separate equivalent individual workload view is not story points and is pending mentor review:
+- figures: Rachit 27, Krishna 31, Prithvi 27, Pranav 26 = 111;
+- it shares #25 between Prithvi (3) and Rachit (2), and #26 between Pranav (2) and Rachit (3);
+- details: `INDIVIDUAL_CONTRIBUTION_ASSESSMENT.md`.
 
 ## 4. Pull Request and review process — what to say honestly
 
